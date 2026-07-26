@@ -9,3 +9,4 @@ avian3d = { version = "0.7.0", default-features = false }
 bevy = { version = "0.19.0", default-features = false }
 lightyear = "0.28.0"
 # serde is not required as serialization happens in game-protocol
+game-protocol = { path = "../game-protocol"} # protocol shared with client
