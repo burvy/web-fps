@@ -7,8 +7,10 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# rendering/window is required here, the client is not headless
 avian3d = "0.7.0"
 bevy = "0.19"
+lightyear = "0.28.0"
 # Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
 log = { version = "0.4", features = [
     "max_level_debug",
