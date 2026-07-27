@@ -55,3 +55,39 @@ It's like shipping a chair, the sender first disassembles the chair into pieces 
 then the receiver reassembles the chair based on agreed-upon instructions. `serde` does this to our data.  
 
 If we didn't agree on how to assemble the chair, the chair might not be assembled the way we expect.
+
+# PROTOCOL
+Our first two points would be `PlayerMarker` and `PlayerInputs`.
+
+`PlayerMarker` is attached to player entities, and allows us to filter out players through ECS.  
+`PlayerInputs` rides inside `ActionState<PlayerInputs>`, and `ActionState` is attached to player 
+entities by **Lightyear**.  
+
+Anything attached to an entity is a **Component** of that entity, and thus must derive `Component`.
+Since `PlayerMarker` is directly attached to a player, it derives `Component`. `PlayerInputs` simply rides 
+inside `ActionState`, and thus `PlayerInputs` does not require `Component`, even if `ActionState` is a 
+component.
+
+`PlayerMarker` is like a sticker that is stuck on a box to allow us to identify it.
+`PlayerInputs` is like data inside an envelope, which is stuck on a box.
+
+***
+`Component` is basically like the adhesiveness. `PlayerMarker` needs to be adhesive because it sticks onto 
+the box directly. `PlayerInputs` does not require adhesives because it rides inside an envelope that 
+has adhesives to stick onto the box.
+***
+
+Taking a look at `PlayerMarker`, the components are as such:  
+`
+#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Component)]
+pub struct PlayerMarker;
+`
+For each:  
+`Clone`: Allows `lightyear` to duplicate entities into a history buffer for rollback, even if 
+the component has no data.
+`Serialize`/`Deserialize`: `serde` derives that allow this component to be converted to and from bytes 
+over the network.
+`Debug`: Allows us to print this for debugging
+`PartialEq`: Allows `lightyear` to check if this component actually changed instead of wasting bandwidth 
+sending this.
+`Component`: Required because we attach `PlayerMarker` to an entity directly.

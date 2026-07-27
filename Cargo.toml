@@ -10,10 +10,16 @@ edition = "2024"
 # rendering/window is required here, the client is not headless
 avian3d = "0.7.0"
 bevy = "0.19"
-lightyear = { version = "0.28.0", features = [
+lightyear = { version = "0.28.0", default-features = false, features = [
+    "std",
     "client",
     "netcode",
     "webtransport",
+    "replication",
+    "prediction",
+    "interpolation",
+    "input_native",
+    "avian3d",
 ]}
 game-protocol = { path = "game-protocol"} # protocol shared with server (client is root)
 # Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
