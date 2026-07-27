@@ -25,7 +25,8 @@ pub struct PlayerMarker;
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Reflect, Default)]
 pub struct PlayerInputs {
     pub look: Vec2,
-    pub motion: Vec3,
+    pub motion: Vec2,
+    pub jump: bool,
 }
 
 /// `MapEntities` exists to satisfy the `InputPlugin`'s trait bound.

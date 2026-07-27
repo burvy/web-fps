@@ -9,6 +9,9 @@ use crate::protocol;
 /// Shared walkspeed to ensure similar simulation between client and server
 pub const WALKSPEED: f32 = 5.0;
 
+/// Shared jump velocity to ensure client-server similarity
+pub const JUMP_VEL: f32 = 10.0;
+
 /// Shared player body definition to ensure similar simulation between client and server
 #[derive(Bundle)]
 pub struct PlayerBody {
@@ -33,5 +36,9 @@ impl Default for PlayerBody {
 /// will cause client-side rubberbanding.
 pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
     // `PlayerInputs` is responsible for declaring which is forward
-    velocity.0 = input.motion; // `motion` is a Vec3 just like `velocity`
+    velocity.0 = Vec3 {
+        x: input.motion.x,
+        y: if input.jump { JUMP_VEL } else { 0.0 },
+        z: input.motion.y,
+    };
 }
