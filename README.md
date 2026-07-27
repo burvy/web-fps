@@ -35,17 +35,20 @@ This does NOT include:
 ## IMPORTS
 You may notice that `game-protocol`, `game-server`, and `game` (root) contain different imports.  
 The reason behind this is because of the server being headless, and protocol handling most of the 
-networking stuff, which requires (serialization)[#serialization]/deserialization.  
+networking stuff, which requires [serialization](#serialization)/deserialization.  
 
 Protocol requires serialization from `serde` because it handles most of `lightyear`'s networking. 
 It's a lot easier to have serialization over a network for cleaner data packing and unpacking across 
 different systems.  
-For this reason, Server and Client (the root `game`) likely do not require serde since Protocol does 
-most of the lifting network-wise.  
+For this reason, Server and Client (the root `game`) likely do not require `serde` since Protocol does 
+most of the lifting network-wise. `serde` may be removed from client and server if it turns out that 
+Protocol holds all the serialization/deserialization.  
 
 Server and Protocol have default features turned off for `bevy` and `avian` so that a renderer/windows 
 don't get packed into the build, because we don't need that on the Server and Protocol. They run headless.  
 The client needs the renderer and windows because, we need to see stuff on the client.
+
+For `lightyear`, there are *client* and *server* features, which must be toggled.  
 
 ### SERIALIZATION
 For those who don't know what serialization is, it's about turning memory values into a flat sequence 
@@ -78,10 +81,10 @@ has adhesives to stick onto the box.
 ***
 
 Taking a look at `PlayerMarker`, the components are as such:  
-`
+```rust
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Component)]
 pub struct PlayerMarker;  
-`
+```
 For each:  
 `Clone`: Allows `lightyear` to duplicate entities into a history buffer for rollback, even if 
 the component has no data.  
@@ -89,7 +92,8 @@ the component has no data.
 over the network.  
 `Debug`: Allows us to print this for debugging  
 `PartialEq`: Allows `lightyear` to check if this component actually changed instead of wasting bandwidth 
-sending this.  
+sending this. More importantly though, this allows the client to know whether the server disagreed with 
+its prediction. 
 `Component`: Required because we attach `PlayerMarker` to an entity directly.  
 
 `PlayerInputs` doesn't have `Component`, but has `Reflect` and `Default`.  
