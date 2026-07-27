@@ -22,3 +22,7 @@ pub struct PlayerInputs {
     pub look: Vec2,
     pub motion: Vec2,
 }
+
+impl MapEntities for PlayerInputs {
+    fn map_entities<M: EntityMapper>(&mut self, _: &mut M) {}
+}
