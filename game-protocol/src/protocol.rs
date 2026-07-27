@@ -23,7 +23,12 @@ pub struct PlayerInputs {
     pub motion: Vec2,
 }
 
-// TODO: add documentation
+/// `MapEntities` exists to satisfy the `InputPlugin`'s trait bound.
+/// Even if `PlayerInputs` has no fields that contain entities,
+/// `InputPlugin` still demands it.
+/// Entity IDs are per world, and when they are sent over the network,
+/// they must be remapped to point at the same thing the sender
+/// originally had it pointing at.
 impl MapEntities for PlayerInputs {
     fn map_entities<M: EntityMapper>(&mut self, _: &mut M) {}
 }

@@ -104,3 +104,14 @@ simply know what is inside the `PlayerInputs` struct by looking at it.
 if the player is not pressing anything, the default `Vec2 { x: 0.0, y: 0.0 }` is sent, indicating 
 that the player is not pressing any motion buttons. We cannot just send nothing, that wouldn't be 
 very reassuring.
+
+## MapEntities
+`MapEntities` is a trait bound required by `InputPlugin`. It is necessary especially when a struct has 
+fields that contains entities.  
+When Entity IDs are sent over the network by a sender, the entity the ID was pointing to is not 
+necessarily the same entity the receiver would be pointing to. It is like telling someone to call 
+the third contact on their phone, for each person it would likely call a different contact. If 
+you want them to contact the same person, there needs to be a mapping between the third contact on
+one person's phone, who that person is, and which contact that would be on your phone, say the 5th 
+contact on your phone. Thus it is required that a mapping exists for entities when we point at 
+entities using `EntityId` and attempt to broadcast that over the network.
