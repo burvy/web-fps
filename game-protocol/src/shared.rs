@@ -4,6 +4,8 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
+use crate::protocol;
+
 /// Shared walkspeed to ensure similar simulation between client and server
 pub const WALKSPEED: f32 = 5.0;
 
@@ -24,4 +26,12 @@ impl Default for PlayerBody {
             locked: LockedAxes::ROTATION_LOCKED.lock_rotation_y(),
         }
     }
+}
+
+/// Hosts agreed-upon changes between client and server about how motion inputs are
+/// processed. It is essential that there are no disagreements between motion as it
+/// will cause client-side rubberbanding.
+pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
+    // `PlayerInputs` is responsible for declaring which is forward
+    velocity.0 = input.motion; // `motion` is a Vec3 just like `velocity`
 }
