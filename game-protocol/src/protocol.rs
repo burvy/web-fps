@@ -3,7 +3,7 @@
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-use bevy::prelude::*;
+use bevy::{ecs::entity::MapEntities, prelude::*};
 use serde::{Deserialize, Serialize};
 
 pub const TIMESTEP: f64 = 1.0 / 64.0;
@@ -23,6 +23,7 @@ pub struct PlayerInputs {
     pub motion: Vec2,
 }
 
+// TODO: add documentation
 impl MapEntities for PlayerInputs {
     fn map_entities<M: EntityMapper>(&mut self, _: &mut M) {}
 }
