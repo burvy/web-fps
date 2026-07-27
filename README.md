@@ -80,14 +80,23 @@ has adhesives to stick onto the box.
 Taking a look at `PlayerMarker`, the components are as such:  
 `
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Component)]
-pub struct PlayerMarker;
+pub struct PlayerMarker;  
 `
 For each:  
 `Clone`: Allows `lightyear` to duplicate entities into a history buffer for rollback, even if 
-the component has no data.
+the component has no data.  
 `Serialize`/`Deserialize`: `serde` derives that allow this component to be converted to and from bytes 
-over the network.
-`Debug`: Allows us to print this for debugging
+over the network.  
+`Debug`: Allows us to print this for debugging  
 `PartialEq`: Allows `lightyear` to check if this component actually changed instead of wasting bandwidth 
-sending this.
-`Component`: Required because we attach `PlayerMarker` to an entity directly.
+sending this.  
+`Component`: Required because we attach `PlayerMarker` to an entity directly.  
+
+`PlayerInputs` doesn't have `Component`, but has `Reflect` and `Default`.  
+`Reflect`: Simply allows the computer to see what is inside the struct without having to explicitly define 
+it, which is especially difficult to do during runtime. As a result of this, `bevy` or `lightyear` can 
+simply know what is inside the `PlayerInputs` struct by looking at it.  
+`Default`: Even when there is no input, we must send something. In the case of a `motion` `Vec2`, 
+if the player is not pressing anything, the default `Vec2 { x: 0.0, y: 0.0 }` is sent, indicating 
+that the player is not pressing any motion buttons. We cannot just send nothing, that wouldn't be 
+very reassuring.
