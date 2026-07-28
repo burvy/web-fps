@@ -24,9 +24,9 @@ impl Default for PlayerBody {
     fn default() -> Self {
         Self {
             body: RigidBody::Dynamic,
-            collider: Collider::capsule(0.5, 2.0),
+            collider: Collider::capsule(0.4, 0.9),
             // TODO: Unlock rotation once base is set up
-            locked: LockedAxes::ROTATION_LOCKED.lock_rotation_y(),
+            locked: LockedAxes::ROTATION_LOCKED.lock_translation_y(),
         }
     }
 }
@@ -37,8 +37,8 @@ impl Default for PlayerBody {
 pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
     // `PlayerInputs` is responsible for declaring which is forward
     velocity.0 = Vec3 {
-        x: input.motion.x,
-        y: if input.jump { JUMP_VEL } else { 0.0 },
-        z: input.motion.y,
+        x: input.motion.x.clamp(0.0, 1.0) * WALKSPEED,
+        y: if input.jump { JUMP_VEL } else { 0.0 }, // TODO: Add grounded check
+        z: input.motion.y.clamp(0.0, 1.0) * WALKSPEED,
     };
 }
