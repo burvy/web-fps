@@ -5,6 +5,7 @@ pub fn player() -> impl Scene {
     bsn! {
         (
             #Player
+            Camera3d
             Mesh3d(asset_value(Capsule3d::new(0.5, 2.0)))
             MeshMaterial3d<StandardMaterial>(asset_value(Color::WHITE))
             Transform::from_translation(Vec3 { x: 0.0, y: 5.0, z: 0.0 })

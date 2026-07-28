@@ -36,9 +36,10 @@ impl Default for PlayerBody {
 /// will cause client-side rubberbanding.
 pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
     // `PlayerInputs` is responsible for declaring which is forward
+    let motion = input.motion.clamp_length_max(1.0);
     velocity.0 = Vec3 {
-        x: input.motion.x.clamp(0.0, 1.0) * WALKSPEED,
+        x: motion.x * WALKSPEED,
         y: if input.jump { JUMP_VEL } else { 0.0 }, // TODO: Add grounded check
-        z: input.motion.y.clamp(0.0, 1.0) * WALKSPEED,
+        z: motion.y * WALKSPEED,
     };
 }
