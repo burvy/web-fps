@@ -37,29 +37,32 @@ impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut App) {
         app.component::<PlayerMarker>().replicate();
 
-        app.insert_resource(Gravity::ZERO); // TODO: unlock gravity when multiplayer works
+        // ---
+        // Having gravity set to 0 here would be confusing.
+        // to let the player fall, unlock translation_y in shared.rs
+        // ---
 
         app.component::<Position>()
-            .replicate()
-            .predict()
-            .with_rollback_condition(position_rollback_condition)
-            .add_linear_interpolation();
+            .replicate() // is sent over the link
+            .predict() // is simulated by clients
+            .with_rollback_condition(pos_rollback_condition) // rollback if disagreements
+            .add_linear_interpolation(); // visual interpolation
 
         // linear velocity does not require interpolation like position
         // because interpolation is only needed for visual things,
         // velocity is basically invisible
         app.component::<LinearVelocity>()
-            .replicate()
-            .predict()
-            .with_rollback_condition(linear_velocity_rollback_condition);
+            .replicate() // is sent over the link
+            .predict() // is simulated by clients
+            .with_rollback_condition(vel_rollback_condition); // rollback if disagreements
 
         app.add_plugins((
             PhysicsPlugins::default()
                 .build()
-                .disable::<IslandPlugin>()
-                .disable::<IslandSleepingPlugin>()
-                .disable::<PhysicsInterpolationPlugin>(),
-            LightyearAvianPlugin::default(), // must be added manually
+                .disable::<IslandPlugin>() // island sleeping isn't deterministic on clients
+                .disable::<IslandSleepingPlugin>() // island sleeping, non-deterministic
+                .disable::<PhysicsInterpolationPlugin>(), // smoothing may conflict
+            LightyearAvianPlugin::default(), // MUST be added manually
         ));
 
         app.add_plugins(InputPlugin::<PlayerInputs> {
@@ -96,10 +99,10 @@ impl MapEntities for PlayerInputs {
     fn map_entities<M: EntityMapper>(&mut self, _: &mut M) {}
 }
 
-fn position_rollback_condition(this: &Position, that: &Position) -> bool {
+fn pos_rollback_condition(this: &Position, that: &Position) -> bool {
     (this.0 - that.0).length() >= 0.01
 }
 
-fn linear_velocity_rollback_condition(this: &LinearVelocity, that: &LinearVelocity) -> bool {
+fn vel_rollback_condition(this: &LinearVelocity, that: &LinearVelocity) -> bool {
     (this.0 - that.0).length() >= 0.01
 }
