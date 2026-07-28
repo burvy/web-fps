@@ -3,7 +3,24 @@
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
+use avian3d::{
+    dynamics::{
+        integrator::Gravity,
+        rigid_body::LinearVelocity,
+        solver::islands::{IslandPlugin, IslandSleepingPlugin},
+    },
+    interpolation::PhysicsInterpolationPlugin,
+    physics_transform::Position,
+    PhysicsPlugins,
+};
 use bevy::{ecs::entity::MapEntities, prelude::*};
+use lightyear::{
+    avian3d::plugin::LightyearAvianPlugin,
+    input::{config::InputConfig, native::plugin::InputPlugin},
+    interpolation::registry::InterpolationRegistrationExt,
+    prediction::registry::PredictionBuilderExt,
+    prelude::AppComponentExt,
+};
 use serde::{Deserialize, Serialize};
 
 /// Shared physics timestep between server and client
@@ -13,6 +30,46 @@ pub const TIMESTEP: f64 = 1.0 / 64.0;
 /// on the same machine won't have issues registering as the same player when they connect to
 /// the server.
 pub const SERVER_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 5000);
+
+pub struct ProtocolPlugin;
+
+impl Plugin for ProtocolPlugin {
+    fn build(&self, app: &mut App) {
+        app.component::<PlayerMarker>().replicate();
+
+        app.insert_resource(Gravity::ZERO); // TODO: unlock gravity when multiplayer works
+
+        app.component::<Position>()
+            .replicate()
+            .predict()
+            .with_rollback_condition(position_rollback_condition)
+            .add_linear_interpolation();
+
+        // linear velocity does not require interpolation like position
+        // because interpolation is only needed for visual things,
+        // velocity is basically invisible
+        app.component::<LinearVelocity>()
+            .replicate()
+            .predict()
+            .with_rollback_condition(linear_velocity_rollback_condition);
+
+        app.add_plugins((
+            PhysicsPlugins::default()
+                .build()
+                .disable::<IslandPlugin>()
+                .disable::<IslandSleepingPlugin>()
+                .disable::<PhysicsInterpolationPlugin>(),
+            LightyearAvianPlugin::default(), // must be added manually
+        ));
+
+        app.add_plugins(InputPlugin::<PlayerInputs> {
+            config: InputConfig {
+                rebroadcast_inputs: true,
+                ..default()
+            },
+        });
+    }
+}
 
 /// Marker used to mark something as a player (no fields)
 /// This struct is bolted onto players as components, and thus must derive Component.
@@ -37,4 +94,12 @@ pub struct PlayerInputs {
 /// originally had it pointing at.
 impl MapEntities for PlayerInputs {
     fn map_entities<M: EntityMapper>(&mut self, _: &mut M) {}
+}
+
+fn position_rollback_condition(this: &Position, that: &Position) -> bool {
+    (this.0 - that.0).length() >= 0.01
+}
+
+fn linear_velocity_rollback_condition(this: &LinearVelocity, that: &LinearVelocity) -> bool {
+    (this.0 - that.0).length() >= 0.01
 }
