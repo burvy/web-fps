@@ -3,6 +3,8 @@ use bevy::prelude::*;
 mod player;
 mod world;
 
+// This section below allows the game to render on the web
+// ---
 use std::sync::atomic::{AtomicBool, Ordering};
 
 static STARTED: AtomicBool = AtomicBool::new(false);
@@ -23,6 +25,7 @@ pub fn run() {
         .add_plugins(MainPlugin)
         .run();
 }
+// ---
 
 pub struct MainPlugin;
 
