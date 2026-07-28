@@ -31,6 +31,7 @@ pub struct MainPlugin;
 
 impl Plugin for MainPlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(player::PlayerPlugin);
         app.add_plugins(world::WorldPlugin);
     }
 }
