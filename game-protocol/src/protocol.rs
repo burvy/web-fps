@@ -5,7 +5,6 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use avian3d::{
     dynamics::{
-        integrator::Gravity,
         rigid_body::LinearVelocity,
         solver::islands::{IslandPlugin, IslandSleepingPlugin},
     },
