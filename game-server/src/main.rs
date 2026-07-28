@@ -1,3 +1,19 @@
+use std::time::Duration;
+
+use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, state::app::StatesPlugin};
+use game_protocol::protocol;
+mod server;
+
 fn main() {
-    println!("Hello, world!");
+    let mut app = App::new();
+    app.add_plugins((
+        MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(
+            protocol::TIMESTEP,
+        ))),
+        StatesPlugin::default(),
+        LogPlugin::default(),
+    ));
+    app.add_plugins(protocol::ProtocolPlugin);
+    app.add_plugins(server::ServerPlugin);
+    app.run();
 }

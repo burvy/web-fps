@@ -39,7 +39,7 @@ pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs
     let motion = input.motion.clamp_length_max(1.0);
     velocity.0 = Vec3 {
         x: motion.x * WALKSPEED,
-        y: if input.jump { JUMP_VEL } else { 0.0 }, // TODO: Add grounded check
+        y: 0.0, // if input.jump { JUMP_VEL } else { 0.0 }, // TODO: Add grounded check
         z: motion.y * WALKSPEED,
     };
 }
