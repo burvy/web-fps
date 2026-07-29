@@ -8,7 +8,7 @@ fn main() {
     let mut app = App::new();
     app.add_plugins((
         MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(
-            protocol::TIMESTEP,
+            protocol::TIMESTEP / 4.0, // run more often than timestep
         ))),
         StatesPlugin::default(),
         LogPlugin::default(),
