@@ -37,9 +37,6 @@ impl Default for PlayerBody {
 pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0);
-    velocity.0 = Vec3 {
-        x: motion.x * WALKSPEED,
-        y: 0.0, // if input.jump { JUMP_VEL } else { 0.0 }, // TODO: Add grounded check
-        z: motion.y * WALKSPEED,
-    };
+    velocity.0.x = motion.x;
+    velocity.0.y = motion.y;
 }
