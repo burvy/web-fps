@@ -4,7 +4,8 @@ use avian3d::dynamics::rigid_body::LinearVelocity;
 use avian3d::physics_transform::Position;
 use bevy::prelude::*;
 use game_protocol::{protocol, shared};
-use lightyear::prelude::input::native::ActionState;
+use lightyear::input::server::{authorize_controlled_targets, InputValidationAppExt};
+use lightyear::prelude::input::native::{ActionState, NativeStateSequence};
 use lightyear::prelude::server::ServerPlugins;
 use lightyear::prelude::*;
 use lightyear::{
@@ -25,6 +26,12 @@ impl Plugin for ServerPlugin {
         app.add_observer(on_connect);
 
         app.add_systems(FixedUpdate, movement);
+
+        // this is not default, but prevents clients from controlling
+        // entities they shouldn't be on the server
+        app.add_input_validator(
+            authorize_controlled_targets::<NativeStateSequence<protocol::PlayerInputs>>,
+        );
     }
 }
 
