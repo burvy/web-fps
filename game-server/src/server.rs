@@ -1,10 +1,13 @@
+use std::time::Duration;
+
 use avian3d::physics_transform::Position;
 use bevy::prelude::*;
 use game_protocol::{protocol, shared};
+use lightyear::prelude::server::ServerPlugins;
 use lightyear::prelude::*;
 use lightyear::{
     connection::{client::Connected, client_of::ClientOf, server::Start},
-    core::id::{PeerId, RemoteId},
+    core::id::RemoteId,
     netcode::{server_plugin::NetcodeConfig, NetcodeServer},
     webtransport::server::WebTransportServerIo,
 };
@@ -14,6 +17,10 @@ pub struct ServerPlugin;
 impl Plugin for ServerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, startup);
+        app.add_plugins(ServerPlugins {
+            tick_duration: Duration::from_secs_f64(protocol::TIMESTEP),
+        });
+        app.add_observer(on_connect);
     }
 }
 
@@ -52,7 +59,6 @@ fn on_connect(
         info!("Couldn't get remote id of player!");
         return;
     };
-    let peer_id: PeerId = remote_id.0;
 
     // `ControlledBy` searches for `With<ReplicationSender>`, so this is required
     cmds.entity(trigger.entity).insert(ReplicationSender);
