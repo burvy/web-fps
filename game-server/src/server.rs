@@ -1,8 +1,10 @@
 use std::time::Duration;
 
+use avian3d::dynamics::rigid_body::LinearVelocity;
 use avian3d::physics_transform::Position;
 use bevy::prelude::*;
 use game_protocol::{protocol, shared};
+use lightyear::prelude::input::native::ActionState;
 use lightyear::prelude::server::ServerPlugins;
 use lightyear::prelude::*;
 use lightyear::{
@@ -21,6 +23,8 @@ impl Plugin for ServerPlugin {
             tick_duration: Duration::from_secs_f64(protocol::TIMESTEP),
         });
         app.add_observer(on_connect);
+
+        app.add_systems(FixedUpdate, movement);
     }
 }
 
@@ -71,5 +75,22 @@ fn on_connect(
         shared::PlayerBody::default(),
         // replicate for everyone
         Replicate::to_clients(NetworkTarget::All),
+        // make all players predict
+        PredictionTarget::to_clients(NetworkTarget::All),
+        // Server puts `ControlledBy` on player entity, which is *replicated* to client,
+        // who gets a `Controlled` marker. The client then writes `ActionState<PlayerInputs>`
+        // into the `Controlled` entity, ships it to the server while tagged with the ID,
+        // which is mapped back to the server entity's id where its own `ActionState` is
+        // written. `movement` reads and acts on the written `ActionState`
+        ControlledBy {
+            owner: trigger.entity,        // connection that owns this entity
+            lifetime: Default::default(), // despawn upon disconnect
+        },
     ));
+}
+
+fn movement(mut query: Query<(&mut LinearVelocity, &ActionState<protocol::PlayerInputs>)>) {
+    query.iter_mut().for_each(|(mut vel, action)| {
+        shared::apply_input(&mut vel, &action.0);
+    })
 }
