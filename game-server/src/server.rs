@@ -1,9 +1,11 @@
+use avian3d::physics_transform::Position;
 use bevy::prelude::*;
-use game_protocol::protocol;
+use game_protocol::{protocol, shared};
+use lightyear::prelude::*;
 use lightyear::{
-    connection::server::Start,
+    connection::{client::Connected, client_of::ClientOf, server::Start},
+    core::id::{PeerId, RemoteId},
     netcode::{server_plugin::NetcodeConfig, NetcodeServer},
-    prelude::{Identity, LocalAddr},
     webtransport::server::WebTransportServerIo,
 };
 
@@ -39,4 +41,29 @@ fn startup(mut cmds: Commands) -> Result {
 
     cmds.trigger(Start { entity: server });
     Ok(())
+}
+
+fn on_connect(
+    trigger: On<Add, Connected>, // triggers when someone connected
+    query: Query<&RemoteId, With<ClientOf>>, // query `RemoteId`s that connected to us
+    mut cmds: Commands,
+) {
+    let Ok(remote_id) = query.get(trigger.entity) else {
+        info!("Couldn't get remote id of player!");
+        return;
+    };
+    let peer_id: PeerId = remote_id.0;
+
+    // `ControlledBy` searches for `With<ReplicationSender>`, so this is required
+    cmds.entity(trigger.entity).insert(ReplicationSender);
+    cmds.spawn((
+        // for player querying/identification
+        protocol::PlayerMarker,
+        // spawnpoint
+        Position(Vec3::new((remote_id.to_bits() % 10) as f32, 0.0, 0.0)), // avian pos
+        // agreed-upon player body shape between client and server
+        shared::PlayerBody::default(),
+        // replicate for everyone
+        Replicate::to_clients(NetworkTarget::All),
+    ));
 }
