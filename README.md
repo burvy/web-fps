@@ -134,12 +134,12 @@ forward constantly because the server expects the client to be further ahead tha
 they currently are. Vice versa, the client would be lagged back due to the opposite 
 reason.
 
----
-There is an important distinction in what belongs in `game-protocol` and what doesn't. 
-Think of it more like what the server uses to simulate the world, the client must 
-listen to that to be able to play. As the server is headless, world building in 
+------
+There is an important distinction in what belongs in `game-protocol` and what doesn't.
+Think of it more like what the server uses to simulate the world, the client must
+listen to that to be able to play. As the server is headless, world building in
 here contains mainly colliders and such.
----
+------
 
 ### `apply_input`
 Simulation constants aren't the only things shared between client and server. The 
