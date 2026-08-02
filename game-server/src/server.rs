@@ -67,7 +67,7 @@ fn on_connect(
     mut cmds: Commands,
 ) {
     let Ok(remote_id) = query.get(trigger.entity) else {
-        info!("Couldn't get remote id of player!");
+        // client connected that isn't a client of us
         return;
     };
 
@@ -76,7 +76,7 @@ fn on_connect(
     cmds.spawn((
         // for player querying/identification
         protocol::PlayerMarker,
-        // spawnpoint
+        // TODO: replace this spawnpoint with actual set spawn later on
         Position(Vec3::new((remote_id.to_bits() % 10) as f32, 0.0, 0.0)), // avian pos
         // agreed-upon player body shape between client and server
         shared::PlayerBody::default(),

@@ -2,7 +2,7 @@
 A game for my website at [burvy.dev](https://burvy.dev/)!  
 
 # Building/Running
-`game` and `game-server` must be built and ran seperately  
+`game` and `game-server` must be built and ran separately  
 `game-protocol` is automatically bundled into both of them
 
 ## `game` (client)
@@ -24,7 +24,8 @@ This can include, but is not limited to:
 - Player Walkspeed
 - Player Bounds
 - Game Logic
-- Packet Information
+- Packet Information  
+
 This does NOT include:  
 - Textures (client-side)
 - Sounds (client-side)
@@ -40,15 +41,16 @@ networking stuff, which requires [serialization](#serialization)/deserialization
 Protocol requires serialization from `serde` because it handles most of `lightyear`'s networking. 
 It's a lot easier to have serialization over a network for cleaner data packing and unpacking across 
 different systems.  
-For this reason, Server and Client (the root `game`) likely do not require `serde` since Protocol does 
-most of the lifting network-wise. `serde` may be removed from client and server if it turns out that 
-Protocol holds all the serialization/deserialization.  
+For this reason, Server and Client (the root `game`) do not require `serde` since Protocol does 
+the lifting network-wise.   
 
 Server and Protocol have default features turned off for `bevy` and `avian` so that a renderer/windows 
 don't get packed into the build, because we don't need that on the Server and Protocol. They run headless.  
 The client needs the renderer and windows because, we need to see stuff on the client.
 
 For `lightyear`, there are *client* and *server* features, which must be toggled.  
+`game-protocol` enables neither feature, the two programs on either side declare 
+which one they are.
 
 ### SERIALIZATION
 For those who don't know what serialization is, it's about turning memory values into a flat sequence 
@@ -100,10 +102,11 @@ its prediction.
 `Reflect`: Simply allows the computer to see what is inside the struct without having to explicitly define 
 it, which is especially difficult to do during runtime. As a result of this, `bevy` or `lightyear` can 
 simply know what is inside the `PlayerInputs` struct by looking at it.  
-`Default`: Even when there is no input, we must send something. In the case of a `motion` `Vec2`, 
-if the player is not pressing anything, the default `Vec2 { x: 0.0, y: 0.0 }` is sent, indicating 
-that the player is not pressing any motion buttons. We cannot just send nothing, that wouldn't be 
-very reassuring.
+`Default`: The client always sends ticks, but if ticks never arrive, `Default` can be used to fill 
+the hole for the current simulation step. For example, if tick 2005's input is missing and the server 
+must simulate tick 2005 now, we can just use `Default`.  
+`Default` is a neutral input for lightyear to fall back on when a sent-tick's input has been lost or 
+hasn't arrived yet.
 
 ## MapEntities
 `MapEntities` is a trait bound required by `InputPlugin`. It is necessary especially when a struct has 
@@ -115,3 +118,35 @@ you want them to contact the same person, there needs to be a mapping between th
 one person's phone, who that person is, and which contact that would be on your phone, say the 5th 
 contact on your phone. Thus it is required that a mapping exists for entities when we point at 
 entities using `EntityId` and attempt to broadcast that over the network.
+
+## `shared.rs`
+`shared.rs` is shared by both client and server in `game-protocol`.  
+Like `protocol.rs`, it contains things that should be similar between client and server, 
+except that it is more simulation specific. For example, for both server and client to 
+agree on how fast a player can go, `WALKSPEED` is defined here and reused whenever we 
+want to simulate walkspeed, which is also conveniently in `shared.rs` as `apply_input`.  
+If `WALKSPEED` were not shared between client and server, there would be disagreement, 
+and as our system is server-authoritative, it may cause rubberbanding client side. 
+This desync would easily occur when manually typing in the constants everywhere, 
+then later on changing the constants in one area but not the other. For example, if 
+`WALKSPEED` was 5 on the server but 4 on the client, the client would be lagged 
+forward constantly because the server expects the client to be further ahead than 
+they currently are. Vice versa, the client would be lagged back due to the opposite 
+reason.
+
+### `apply_input`
+Simulation constants aren't the only things shared between client and server. The 
+two also must agree on how movement happens. For example, walking is done by reading 
+the motion vector from `PlayerInputs`, clamping and multiplying by `WALKSPEED`, then 
+setting the entity's velocity to that.
+
+### Replicate
+
+
+### PredictionTarget
+
+### ControlledBy
+
+### `run_loop` vs `tick_duration`
+
+### `digest.txt`

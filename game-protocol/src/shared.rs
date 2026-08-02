@@ -10,7 +10,7 @@ use crate::protocol;
 pub const WALKSPEED: f32 = 5.0;
 
 /// Shared jump velocity to ensure client-server similarity
-pub const JUMP_VEL: f32 = 10.0;
+pub const JUMP_VEL: f32 = 10.0; // TODO: should be used when jumping is implemented
 
 /// Shared player body definition to ensure similar simulation between client and server
 #[derive(Bundle)]
@@ -25,7 +25,7 @@ impl Default for PlayerBody {
         Self {
             body: RigidBody::Dynamic,
             collider: Collider::capsule(0.4, 0.9),
-            // TODO: Unlock rotation once base is set up
+            // TODO: Unlock rotation and y translation when ready
             locked: LockedAxes::ROTATION_LOCKED.lock_translation_y(),
         }
     }
@@ -39,4 +39,5 @@ pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
     velocity.0.x = motion.x;
     velocity.0.z = motion.y;
+    // TODO: add jump input when we get to it
 }
