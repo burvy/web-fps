@@ -140,6 +140,9 @@ Think of it more like what the server uses to simulate the world, the client mus
 listen to that to be able to play. As the server is headless, world building in
 here contains mainly colliders and such.
 ------
+If something is not replicated over the network, it can be directly compiled from the 
+shared library into both server and client instead of wasting bandwidth
+------
 
 ### `apply_input`
 Simulation constants aren't the only things shared between client and server. The 

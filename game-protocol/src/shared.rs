@@ -13,9 +13,13 @@ pub const WALKSPEED: f32 = 5.0;
 pub const JUMP_VEL: f32 = 10.0; // TODO: should be used when jumping is implemented
 
 /// Shared player radius for simulation similarity
-pub const PLAYER_RADIUS: f32 = 0.4;
-/// Shared player height for simulation similarity
-pub const PLAYER_HEIGHT: f32 = 0.9;
+pub const PLAYER_RADIUS: f32 = 0.45;
+/// Shared player length for simulation similarity
+/// This describes the cylinder section of the player,
+/// excluding the caps. The total height is:
+/// PLAYER_LENGTH + (2.0 * PLAYER_RADIUS) which is 1.8m
+/// Recalculate for the doc if anything changes with these two constants
+pub const PLAYER_LENGTH: f32 = 0.9;
 
 /// Shared player body definition to ensure similar simulation between client and server
 #[derive(Bundle)]
@@ -29,7 +33,7 @@ impl Default for PlayerBody {
     fn default() -> Self {
         Self {
             body: RigidBody::Dynamic,
-            collider: Collider::capsule(PLAYER_RADIUS, PLAYER_HEIGHT),
+            collider: Collider::capsule(PLAYER_RADIUS, PLAYER_LENGTH),
             // TODO: Unlock rotation and y translation when ready
             locked: LockedAxes::ROTATION_LOCKED.lock_translation_y(),
         }
