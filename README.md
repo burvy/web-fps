@@ -151,7 +151,9 @@ the motion vector from `PlayerInputs`, clamping and multiplying by `WALKSPEED`, 
 setting the entity's velocity to that.
 
 ### Replicate
-
+Replication is for state that one side owns and changes. Static constants can 
+just be put in `game-protocol` for both sides to compile into their builds to 
+save on bandwidth.
 
 ### PredictionTarget
 
