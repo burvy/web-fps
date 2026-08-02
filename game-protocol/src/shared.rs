@@ -12,6 +12,11 @@ pub const WALKSPEED: f32 = 5.0;
 /// Shared jump velocity to ensure client-server similarity
 pub const JUMP_VEL: f32 = 10.0; // TODO: should be used when jumping is implemented
 
+/// Shared player radius for simulation similarity
+pub const PLAYER_RADIUS: f32 = 0.4;
+/// Shared player height for simulation similarity
+pub const PLAYER_HEIGHT: f32 = 0.9;
+
 /// Shared player body definition to ensure similar simulation between client and server
 #[derive(Bundle)]
 pub struct PlayerBody {
@@ -24,7 +29,7 @@ impl Default for PlayerBody {
     fn default() -> Self {
         Self {
             body: RigidBody::Dynamic,
-            collider: Collider::capsule(0.4, 0.9),
+            collider: Collider::capsule(PLAYER_RADIUS, PLAYER_HEIGHT),
             // TODO: Unlock rotation and y translation when ready
             locked: LockedAxes::ROTATION_LOCKED.lock_translation_y(),
         }
