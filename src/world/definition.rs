@@ -1,16 +1,22 @@
-use std::f32::consts::FRAC_PI_2;
-
-use avian3d::prelude::*;
 use bevy::prelude::*;
+use game_protocol::world::{
+    self,
+    definition::{BASEPLATE_LENGTH, BASEPLATE_THICKNESS},
+};
 
-pub fn world() -> impl SceneList {
-    bsn_list! [
-        (
-            #Ground
-            Mesh3d(asset_value(Circle::new(10.0)))
-            MeshMaterial3d<StandardMaterial>(asset_value(Color::WHITE))
-            Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2))
-            Collider::cylinder(10.0, 0.1)
-        ),
-    ]
+pub fn build_baseplate(
+    mut cmds: Commands,
+    mut mesh: ResMut<Assets<Mesh>>,
+    mut mats: ResMut<Assets<StandardMaterial>>,
+) {
+    // world building
+    cmds.spawn((
+        world::definition::Baseplate::default(),
+        Mesh3d(mesh.add(Cuboid::new(
+            BASEPLATE_LENGTH,
+            BASEPLATE_THICKNESS,
+            BASEPLATE_LENGTH,
+        ))),
+        MeshMaterial3d::<StandardMaterial>(mats.add(Color::WHITE)),
+    ));
 }

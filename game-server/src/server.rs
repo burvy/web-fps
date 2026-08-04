@@ -3,7 +3,7 @@ use std::time::Duration;
 use avian3d::dynamics::rigid_body::LinearVelocity;
 use avian3d::physics_transform::Position;
 use bevy::prelude::*;
-use game_protocol::{protocol, shared};
+use game_protocol::{protocol, shared, world};
 use lightyear::input::server::{authorize_controlled_targets, InputValidationAppExt};
 use lightyear::prelude::input::native::{ActionState, NativeStateSequence};
 use lightyear::prelude::server::ServerPlugins;
@@ -56,6 +56,9 @@ fn startup(mut cmds: Commands) -> Result {
             },
         ))
         .id();
+
+    // world building
+    cmds.spawn(world::definition::Baseplate::default());
 
     cmds.trigger(Start { entity: server });
     Ok(())
