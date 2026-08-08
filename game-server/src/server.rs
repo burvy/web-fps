@@ -43,7 +43,7 @@ fn startup(mut cmds: Commands) -> Result {
     ];
     let identity = Identity::self_signed(valid_addresses)?;
     let digest = identity.certificate_chain().as_slice()[0].hash();
-    let digest_hex = digest.to_string().replace(":", ""); // human to machine readable
+    let digest_hex = digest.to_string().replace(":", "");
     std::fs::write("digest.txt", &digest_hex)?;
     info!("digest written: {}", digest);
 
@@ -80,18 +80,19 @@ fn on_connect(
         // for player querying/identification
         protocol::PlayerMarker,
         // TODO: replace this spawnpoint with actual set spawn later on
-        Position(Vec3::new((remote_id.to_bits() % 10) as f32, 0.0, 0.0)), // avian pos
+        Position(Vec3::new((remote_id.to_bits() % 10) as f32, 0.0, 0.0)),
         // agreed-upon player body shape between client and server
         shared::PlayerBody::default(),
         // replicate for everyone
         Replicate::to_clients(NetworkTarget::All),
         // make all players predict
         PredictionTarget::to_clients(NetworkTarget::All),
-        // Server puts `ControlledBy` on player entity, which is *replicated* to client,
-        // who gets a `Controlled` marker. The client then writes `ActionState<PlayerInputs>`
-        // into the `Controlled` entity, ships it to the server while tagged with the ID,
-        // which is mapped back to the server entity's id where its own `ActionState` is
-        // written. `movement` reads and acts on the written `ActionState`
+        // Server puts `ControlledBy` on player entity, which is *replicated*
+        // to client, who gets a `Controlled` marker. The client then writes
+        // `ActionState<PlayerInputs>` into the `Controlled` entity, ships it
+        // to the server while tagged with the ID, which is mapped back to the
+        // server entity's id where its own `ActionState` is written.
+        // `movement` reads and acts on the written `ActionState`
         ControlledBy {
             owner: trigger.entity,        // connection that owns this entity
             lifetime: Default::default(), // despawn upon disconnect
