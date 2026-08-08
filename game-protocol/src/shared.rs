@@ -21,7 +21,8 @@ pub const PLAYER_RADIUS: f32 = 0.45;
 /// Recalculate for the doc if anything changes with these two constants
 pub const PLAYER_LENGTH: f32 = 0.9;
 
-/// Shared player body definition to ensure similar simulation between client and server
+/// Shared player body definition to ensure similar simulation between
+/// client and server
 #[derive(Bundle)]
 pub struct PlayerBody {
     body: RigidBody,
@@ -40,9 +41,9 @@ impl Default for PlayerBody {
     }
 }
 
-/// Hosts agreed-upon changes between client and server about how motion inputs are
-/// processed. It is essential that there are no disagreements between motion as it
-/// will cause client-side rubberbanding.
+/// Hosts agreed-upon changes between client and server about how motion inputs
+/// are processed. It is essential that there are no disagreements between
+/// motion as it will cause client-side rubberbanding.
 pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;

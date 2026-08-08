@@ -24,10 +24,10 @@ use serde::{Deserialize, Serialize};
 
 /// Shared physics timestep between server and client
 pub const TIMESTEP: f64 = 1.0 / 64.0;
-/// It is best to fix a specific server IP and port, so the clients know who to connect to
-/// For clients, using port 0 allows the computer to choose a random open port so that clients
-/// on the same machine won't have issues registering as the same player when they connect to
-/// the server.
+/// It is best to fix a specific server IP and port, so the clients know who
+/// to connect to. For clients, using port 0 allows the computer to choose a
+/// random open port so that clients on the same machine won't have issues
+/// registering as the same player when they connect to the server.
 pub const SERVER_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 5000);
 
 pub struct ProtocolPlugin;
@@ -44,7 +44,7 @@ impl Plugin for ProtocolPlugin {
         app.component::<Position>()
             .replicate() // is sent over the link
             .predict() // is simulated by clients
-            .with_rollback_condition(pos_rollback_condition) // rollback if disagreements
+            .with_rollback_condition(pos_rollback_condition)
             .add_linear_interpolation(); // visual interpolation
 
         // linear velocity does not require interpolation like position
@@ -53,14 +53,14 @@ impl Plugin for ProtocolPlugin {
         app.component::<LinearVelocity>()
             .replicate() // is sent over the link
             .predict() // is simulated by clients
-            .with_rollback_condition(vel_rollback_condition); // rollback if disagreements
+            .with_rollback_condition(vel_rollback_condition);
 
         app.add_plugins((
             PhysicsPlugins::default()
                 .build()
-                .disable::<IslandPlugin>() // island sleeping isn't deterministic on clients
-                .disable::<IslandSleepingPlugin>() // island sleeping, non-deterministic
-                .disable::<PhysicsInterpolationPlugin>(), // smoothing may conflict
+                .disable::<IslandPlugin>()
+                .disable::<IslandSleepingPlugin>()
+                .disable::<PhysicsInterpolationPlugin>(),
             LightyearAvianPlugin::default(), // MUST be added manually
         ));
 
@@ -74,7 +74,8 @@ impl Plugin for ProtocolPlugin {
 }
 
 /// Marker used to mark something as a player (no fields)
-/// This struct is bolted onto players as components, and thus must derive Component.
+/// This struct is bolted onto players as components, and thus must derive
+/// Component.
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Component)]
 pub struct PlayerMarker;
 
