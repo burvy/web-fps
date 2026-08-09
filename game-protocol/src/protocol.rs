@@ -4,13 +4,10 @@
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use avian3d::{
-    dynamics::{
+    PhysicsPlugins, dynamics::{
         rigid_body::LinearVelocity,
         solver::islands::{IslandPlugin, IslandSleepingPlugin},
-    },
-    interpolation::PhysicsInterpolationPlugin,
-    physics_transform::Position,
-    PhysicsPlugins,
+    }, interpolation::PhysicsInterpolationPlugin, physics_transform::{PhysicsTransformPlugin, Position},
 };
 use bevy::{ecs::entity::MapEntities, prelude::*};
 use lightyear::{
@@ -60,7 +57,8 @@ impl Plugin for ProtocolPlugin {
                 .build()
                 .disable::<IslandPlugin>()
                 .disable::<IslandSleepingPlugin>()
-                .disable::<PhysicsInterpolationPlugin>(),
+                .disable::<PhysicsInterpolationPlugin>()
+                .disable::<PhysicsTransformPlugin>(),
             LightyearAvianPlugin::default(), // MUST be added manually
         ));
 

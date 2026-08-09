@@ -110,22 +110,22 @@ must simulate tick 2005 now, we can just use `Default`.
 `Default` is a neutral input for lightyear to fall back on when a sent-tick's input has been lost or 
 hasn't arrived yet.
 
-Also in the protocol, you may notice that three physics plugins are disabled:
+Also in the protocol, you may notice that four physics plugins are disabled:
 
 ```rust
 app.add_plugins((
     PhysicsPlugins::default()
         .build()
-        .disable::<IslandPlugin>()
-        .disable::<IslandSleepingPlugin>()
-        .disable::<PhysicsInterpolationPlugin>(),
+        .disable::<IslandPlugin>() // DETERMINISM ISSUES
+        .disable::<IslandSleepingPlugin>() // DETERMINISM ISSUES
+        .disable::<PhysicsInterpolationPlugin>() // DETERMINISM ISSUES
+        .disable::<PhysicsTransformPlugin>(), // DUPLICATION ISSUES
     LightyearAvianPlugin::default(), // MUST be added manually
     ));
 ```
 
 It may look like free performance that we are ignoring, but those plugins actually conflict with 
-determinism on the client and server. Please do not re-enable them. They will cause determinism 
-issues.
+determinism and duplication in lightyear. Please do not re-enable them. 
 
 ## MapEntities
 `MapEntities` is a trait bound required by `InputPlugin`. It is necessary especially when a struct has 
@@ -166,8 +166,8 @@ shared library into both server and client instead of wasting bandwidth
 ### `apply_input`
 Simulation constants aren't the only things shared between client and server. The 
 two also must agree on how movement happens. For example, walking is done by reading 
-the 2d motion vector from `PlayerInputs`, clamping to `[0, 1]` and multiplying 
-by `WALKSPEED`, then setting the entity's velocity to that.
+the 2d motion vector from `PlayerInputs`, clamping magnitude to `[0, 1]` and 
+multiplying by `WALKSPEED`, then setting the entity's velocity to that.
 
 Note that we will touch motion on the `x` and `z` axes, but we leave `y` to the physics system, it 
 uses it for gravity.
@@ -182,10 +182,15 @@ save on bandwidth.
 ### ControlledBy
 
 ### `run_loop` vs `tick_duration`
-the `run_loop` is a faster loop than `tick_duration`. `tick_duration` looks at `run_loop` to see 
-when ticking should happen, which means `run_loop` must be a more accurate descriptor of the time 
-than `tick_duration` is. `tick_duration` can only be as sure about the current time as `run_loop` 
-is.
+the `run_loop` is a faster loop than `tick_duration`.
+
+Imagine a bus schedule, `tick_duration` is a bus every 15 minutes, while `run_loop` is how often 
+you glance for a bus. Glancing every 4 minutes means the bus could have been there for a whole 4 minutes 
+before you notice the bus. Glancing every 15 minutes means the bus could have been there for 15.
+
+We must set `run_loop` faster so we notice that we should tick faster. We could have missed the tick 
+window for a whole 15ms if `run_loop` and `tick_duration` were both 15ms. On the other hand, we only 
+miss by 4ms at worst if `run_loop` is 4ms.
 
 ### `digest.txt`
 
@@ -196,6 +201,6 @@ app.add_input_validator(
     authorize_controlled_targets::<NativeStateSequence<protocol::PlayerInputs>>,
 );
 ```
-This line is not actually necessary, 
+This line is not enabled by default, 
 but it prevents clients from tricking the server into thinking they are actually another 
 entity. This prevents hackers from causing chaos by spoofing entity ids. Don't delete it!
