@@ -15,8 +15,10 @@ Running: `cargo run -p game-server`
 # BASICS
 
 ## `protocol`
-`game-protocol` contains two things:  
+`game-protocol` contains two main things:  
 `protocol` and `shared`.  
+It may also contain other stuff, for example, `world`, which 
+is in the same category as `shared`.
 
 This folder contains things that are shared between both server and client 
 for things like simulation, prediction, etc...  
@@ -108,6 +110,23 @@ must simulate tick 2005 now, we can just use `Default`.
 `Default` is a neutral input for lightyear to fall back on when a sent-tick's input has been lost or 
 hasn't arrived yet.
 
+Also in the protocol, you may notice that three physics plugins are disabled:
+
+```rust
+app.add_plugins((
+    PhysicsPlugins::default()
+        .build()
+        .disable::<IslandPlugin>()
+        .disable::<IslandSleepingPlugin>()
+        .disable::<PhysicsInterpolationPlugin>(),
+    LightyearAvianPlugin::default(), // MUST be added manually
+    ));
+```
+
+It may look like free performance that we are ignoring, but those plugins actually conflict with 
+determinism on the client and server. Please do not re-enable them. They will cause determinism 
+issues.
+
 ## MapEntities
 `MapEntities` is a trait bound required by `InputPlugin`. It is necessary especially when a struct has 
 fields that contains entities.  
@@ -147,8 +166,11 @@ shared library into both server and client instead of wasting bandwidth
 ### `apply_input`
 Simulation constants aren't the only things shared between client and server. The 
 two also must agree on how movement happens. For example, walking is done by reading 
-the motion vector from `PlayerInputs`, clamping and multiplying by `WALKSPEED`, then 
-setting the entity's velocity to that.
+the 2d motion vector from `PlayerInputs`, clamping to `[0, 1]` and multiplying 
+by `WALKSPEED`, then setting the entity's velocity to that.
+
+Note that we will touch motion on the `x` and `z` axes, but we leave `y` to the physics system, it 
+uses it for gravity.
 
 ### Replicate
 Replication is for state that one side owns and changes. Static constants can 
@@ -160,5 +182,20 @@ save on bandwidth.
 ### ControlledBy
 
 ### `run_loop` vs `tick_duration`
+the `run_loop` is a faster loop than `tick_duration`. `tick_duration` looks at `run_loop` to see 
+when ticking should happen, which means `run_loop` must be a more accurate descriptor of the time 
+than `tick_duration` is. `tick_duration` can only be as sure about the current time as `run_loop` 
+is.
 
 ### `digest.txt`
+
+# SERVER
+You may notice this line:  
+```rust
+app.add_input_validator(
+    authorize_controlled_targets::<NativeStateSequence<protocol::PlayerInputs>>,
+);
+```
+This line is not actually necessary, 
+but it prevents clients from tricking the server into thinking they are actually another 
+entity. This prevents hackers from causing chaos by spoofing entity ids. Don't delete it!
