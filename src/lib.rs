@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+mod net;
 mod player;
 mod world;
 
@@ -35,5 +36,6 @@ impl Plugin for MainPlugin {
         app.add_plugins(game_protocol::protocol::ProtocolPlugin);
         app.add_plugins(player::PlayerPlugin);
         app.add_plugins(world::WorldPlugin);
+        app.add_plugins(net::NetPlugin);
     }
 }
