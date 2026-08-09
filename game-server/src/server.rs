@@ -80,7 +80,7 @@ fn on_connect(
         // for player querying/identification
         protocol::PlayerMarker,
         // TODO: replace this spawnpoint with actual set spawn later on
-        Position(Vec3::new((remote_id.to_bits() % 10) as f32, 0.0, 0.0)),
+        Position(Vec3::new((remote_id.to_bits() % 10) as f32, 2.0, 0.0)),
         // agreed-upon player body shape between client and server
         shared::PlayerBody::default(),
         // replicate for everyone

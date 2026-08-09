@@ -35,8 +35,7 @@ impl Default for PlayerBody {
         Self {
             body: RigidBody::Dynamic,
             collider: Collider::capsule(PLAYER_RADIUS, PLAYER_LENGTH),
-            // TODO: Unlock rotation and y translation when ready
-            locked: LockedAxes::ROTATION_LOCKED.lock_translation_y(),
+            locked: LockedAxes::ROTATION_LOCKED,
         }
     }
 }

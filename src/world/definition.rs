@@ -19,4 +19,8 @@ pub fn build_baseplate(
         ))),
         MeshMaterial3d::<StandardMaterial>(mats.add(Color::WHITE)),
     ));
+    cmds.spawn((
+        DirectionalLight::default(),
+        Transform::from_translation(Vec3::new(5.0, 5.0, 10.0)).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
 }
