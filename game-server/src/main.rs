@@ -13,7 +13,7 @@ fn main() {
         StatesPlugin::default(),
         LogPlugin::default(),
     ));
-    app.add_plugins(protocol::ProtocolPlugin);
     app.add_plugins(server::ServerPlugin);
+    app.add_plugins(protocol::ProtocolPlugin);
     app.run();
 }

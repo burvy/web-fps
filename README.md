@@ -110,14 +110,12 @@ must simulate tick 2005 now, we can just use `Default`.
 `Default` is a neutral input for lightyear to fall back on when a sent-tick's input has been lost or 
 hasn't arrived yet.
 
-Also in the protocol, you may notice that four physics plugins are disabled:
+Also in the protocol, you may notice that two physics plugins are disabled:
 
 ```rust
 app.add_plugins((
     PhysicsPlugins::default()
         .build()
-        .disable::<IslandPlugin>() // DETERMINISM ISSUES
-        .disable::<IslandSleepingPlugin>() // DETERMINISM ISSUES
         .disable::<PhysicsInterpolationPlugin>() // DETERMINISM ISSUES
         .disable::<PhysicsTransformPlugin>(), // DUPLICATION ISSUES
     LightyearAvianPlugin::default(), // MUST be added manually
