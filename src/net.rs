@@ -10,8 +10,9 @@ use std::{
 use bevy::prelude::*;
 use game_protocol::protocol;
 use lightyear::{
-    netcode::Key,
+    netcode::{client_plugin::NetcodeConfig, Key, NetcodeClient},
     prelude::{client::ClientPlugins, *},
+    webtransport::client::WebTransportClientIo,
 };
 
 const CLIENT_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0);
@@ -36,5 +37,22 @@ fn connect(mut cmds: Commands) -> Result {
         private_key: Key::default(),
         protocol_id: 0,
     };
+
+    let client = cmds
+        .spawn((
+            Client::default(),
+            LocalAddr(CLIENT_ADDR),
+            PeerAddr(protocol::SERVER_ADDR),
+            Link::default(),
+            ReplicationReceiver,
+            NetcodeClient::new(auth, NetcodeConfig::default())?,
+            WebTransportClientIo {
+                certificate_digest: digest,
+            },
+            PredictionManager::default(),
+        ))
+        .id();
+
+    cmds.trigger(Connect { entity: client });
     Ok(())
 }
