@@ -33,9 +33,9 @@ pub struct MainPlugin;
 impl Plugin for MainPlugin {
     fn build(&self, app: &mut App) {
         // brings physics with it, so the client can actually simulate
-        app.add_plugins(game_protocol::protocol::ProtocolPlugin);
         app.add_plugins(player::PlayerPlugin);
         app.add_plugins(world::WorldPlugin);
         app.add_plugins(net::NetPlugin);
+        app.add_plugins(game_protocol::protocol::ProtocolPlugin);
     }
 }

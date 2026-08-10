@@ -4,10 +4,7 @@
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use avian3d::{
-    dynamics::{
-        rigid_body::LinearVelocity,
-        solver::islands::{IslandPlugin, IslandSleepingPlugin},
-    },
+    dynamics::rigid_body::LinearVelocity,
     interpolation::PhysicsInterpolationPlugin,
     physics_transform::{PhysicsTransformPlugin, Position},
     PhysicsPlugins,
