@@ -35,6 +35,7 @@ impl Plugin for NetPlugin {
     }
 }
 
+/// Handles web handshake and creating a connection to the server
 fn connect(mut cmds: Commands) -> Result {
     let digest = std::fs::read_to_string("digest.txt")?.trim().to_string();
     let auth = Authentication::Manual {
