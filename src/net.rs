@@ -11,7 +11,7 @@ use bevy::prelude::*;
 use game_protocol::{protocol, shared};
 use lightyear::{
     netcode::{client_plugin::NetcodeConfig, Key, NetcodeClient},
-    prelude::{client::ClientPlugins, *},
+    prelude::{client::ClientPlugins, input::native::InputMarker, *},
     webtransport::client::WebTransportClientIo,
 };
 
@@ -25,6 +25,7 @@ impl Plugin for NetPlugin {
             tick_duration: Duration::from_secs_f64(protocol::TIMESTEP),
         });
         app.add_systems(Startup, connect);
+        // Newly-added entities
         app.add_systems(
             Update,
             (
@@ -32,8 +33,15 @@ impl Plugin for NetPlugin {
                 draw_players, // draw visually
             ),
         );
+        // Observer logic
+        app.add_observer(detect_replicate_player);
+        app.add_observer(detect_replicate_our_player);
     }
 }
+
+/*
+ * Basic connection
+ */
 
 /// Handles web handshake and creating a connection to the server
 fn connect(mut cmds: Commands) -> Result {
@@ -65,6 +73,10 @@ fn connect(mut cmds: Commands) -> Result {
     Ok(())
 }
 
+/*
+ * On-join functions
+ */
+
 /// Insert physics onto player upon being newly predicted
 fn add_physics(
     mut cmds: Commands,
@@ -91,4 +103,19 @@ fn draw_players(
             MeshMaterial3d::<StandardMaterial>(asset_value(Color::WHITE))
         });
     });
+}
+
+/*
+ * Observers
+ */
+
+/// Logic to run when any player joining is detected
+fn detect_replicate_player(player: On<Add, protocol::PlayerMarker>) {
+    info!("Player {:?} was replicated to me!", player.entity);
+}
+
+/// Logic to run when our designated controlled player joins
+fn detect_replicate_our_player(our_player: On<Add, Controlled>, mut cmds: Commands) {
+    cmds.entity(our_player.entity)
+        .insert(InputMarker::<protocol::PlayerInputs>::default());
 }
