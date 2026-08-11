@@ -8,7 +8,10 @@ use std::{
 };
 
 use bevy::prelude::*;
-use game_protocol::protocol;
+use game_protocol::{
+    protocol::{self, PlayerMarker},
+    shared,
+};
 use lightyear::{
     netcode::{client_plugin::NetcodeConfig, Key, NetcodeClient},
     prelude::{client::ClientPlugins, *},
@@ -25,6 +28,13 @@ impl Plugin for NetPlugin {
             tick_duration: Duration::from_secs_f64(protocol::TIMESTEP),
         });
         app.add_systems(Startup, connect);
+        app.add_systems(
+            Update,
+            (
+                add_physics,  // prediction
+                draw_players, // draw visually
+            ),
+        );
     }
 }
 
@@ -55,4 +65,28 @@ fn connect(mut cmds: Commands) -> Result {
 
     cmds.trigger(Connect { entity: client });
     Ok(())
+}
+
+fn add_physics(
+    mut cmds: Commands,
+    players: Query<Entity, (Added<Predicted>, With<protocol::PlayerMarker>)>,
+) {
+    players.iter().for_each(|player| {
+        cmds.entity(player).insert(shared::PlayerBody::default());
+    });
+}
+
+fn draw_players(
+    mut cmds: Commands,
+    players: Query<Entity, (Added<Predicted>, With<PlayerMarker>)>,
+) {
+    players.iter().for_each(|player| {
+        cmds.entity(player).queue_apply_scene(bsn! {
+            Mesh3d(asset_value(Capsule3d {
+                radius: shared::PLAYER_RADIUS,
+                half_length: shared::PLAYER_LENGTH,
+            }))
+            MeshMaterial3d::<StandardMaterial>(asset_value(Color::WHITE))
+        });
+    });
 }

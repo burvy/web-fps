@@ -4,7 +4,7 @@
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use avian3d::{
-    dynamics::rigid_body::LinearVelocity,
+    dynamics::{rigid_body::LinearVelocity, solver::islands::IslandSleepingPlugin},
     interpolation::PhysicsInterpolationPlugin,
     physics_transform::{PhysicsTransformPlugin, Position},
     PhysicsPlugins,
@@ -55,6 +55,7 @@ impl Plugin for ProtocolPlugin {
         app.add_plugins((
             PhysicsPlugins::default()
                 .build()
+                .disable::<IslandSleepingPlugin>()
                 .disable::<PhysicsInterpolationPlugin>()
                 .disable::<PhysicsTransformPlugin>(),
             LightyearAvianPlugin::default(), // MUST be added manually
