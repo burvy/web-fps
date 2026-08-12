@@ -46,6 +46,7 @@ impl Plugin for NetPlugin {
         app.add_observer(detect_replicate_our_player);
 
         // Client-server interface (tick rate update)
+        app.insert_resource(PlayerLook(Vec2::default())); // yaw and pitch
         app.add_systems(
             FixedPreUpdate,
             buffer_input.in_set(InputSystems::WriteClientInputs),
@@ -135,6 +136,19 @@ fn detect_replicate_our_player(our_player: On<Add, Controlled>, mut cmds: Comman
  * Player input
  */
 
+#[derive(Resource)]
+struct PlayerLook(Vec2);
+
+impl PlayerLook {
+    /// Updates the current yaw and pitch based on mouse motion
+    /// accumulation
+    fn update_look(&mut self, accumulation: Vec2) -> Vec2 {
+        self.0.x += accumulation.x;
+        self.0.y += accumulation.y;
+        self.0
+    }
+}
+
 /// Player input for KEYBOARD for now!
 /// TODO: allow input for other devices (mobile?)
 /// TODO: allow configurable input controls
@@ -144,7 +158,8 @@ fn buffer_input(
         With<InputMarker<protocol::PlayerInputs>>,
     >,
     keys: Res<ButtonInput<KeyCode>>,
-    mouse_look: Res<AccumulatedMouseMotion>,
+    mut look_res: ResMut<PlayerLook>, // yaw/pitch stored in resource
+    mouse_acc: Res<AccumulatedMouseMotion>,
 ) {
     // TODO: configurable inputs
     let fwd = f32::from(keys.pressed(KeyCode::KeyW));
@@ -153,7 +168,7 @@ fn buffer_input(
     let lwd = f32::from(keys.pressed(KeyCode::KeyA));
 
     action.0 = protocol::PlayerInputs {
-        look: mouse_look.delta,
+        look: look_res.update_look(mouse_acc.delta),
         motion: Vec2 {
             x: rwd - lwd,
             y: fwd - bwd,
