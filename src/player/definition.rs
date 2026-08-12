@@ -1,3 +1,5 @@
+use std::f32::consts::FRAC_PI_2;
+
 use bevy::prelude::*;
 
 /// Mouse sensitivity constant
@@ -18,6 +20,7 @@ impl PlayerInfo {
     pub fn update_look(&mut self, accumulation: Vec2) {
         self.look.x += accumulation.x * SENSITIVITY;
         self.look.y += accumulation.y * SENSITIVITY;
+        self.look.y.clamp(-FRAC_PI_2, FRAC_PI_2);
     }
 }
 
