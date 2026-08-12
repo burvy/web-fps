@@ -10,6 +10,7 @@ use std::{
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 use game_protocol::{protocol, shared};
 use lightyear::{
+    input::client::InputSystems,
     netcode::{client_plugin::NetcodeConfig, Key, NetcodeClient},
     prelude::{
         client::ClientPlugins,
@@ -45,7 +46,10 @@ impl Plugin for NetPlugin {
         app.add_observer(detect_replicate_our_player);
 
         // Client-server interface (tick rate update)
-        app.add_systems(FixedUpdate, buffer_input);
+        app.add_systems(
+            FixedUpdate,
+            buffer_input.in_set(InputSystems::WriteClientInputs),
+        );
     }
 }
 
