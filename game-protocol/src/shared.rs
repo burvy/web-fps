@@ -43,9 +43,17 @@ impl Default for PlayerBody {
 /// Hosts agreed-upon changes between client and server about how motion inputs
 /// are processed. It is essential that there are no disagreements between
 /// motion as it will cause client-side rubberbanding.
-pub fn apply_input(velocity: &mut LinearVelocity, input: &protocol::PlayerInputs) {
+pub fn apply_input(
+    rotation: &mut Rotation,
+    velocity: &mut LinearVelocity,
+    input: &protocol::PlayerInputs,
+) {
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
+
+    rotation.x = input.look.x;
+    rotation.y = input.look.y;
+
     velocity.0.x = motion.x;
     velocity.0.z = motion.y;
     // TODO: add jump input when we get to it

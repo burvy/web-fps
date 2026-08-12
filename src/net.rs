@@ -7,6 +7,7 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
+use avian3d::{dynamics::rigid_body::LinearVelocity, physics_transform::Rotation};
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 use game_protocol::{protocol, shared};
 use lightyear::{
@@ -51,6 +52,9 @@ impl Plugin for NetPlugin {
             FixedPreUpdate,
             buffer_input.in_set(InputSystems::WriteClientInputs),
         );
+
+        // Simulate players
+        app.add_systems(FixedUpdate, client_player_motion);
     }
 }
 
@@ -168,11 +172,30 @@ fn buffer_input(
     let lwd = f32::from(keys.pressed(KeyCode::KeyA));
 
     action.0 = protocol::PlayerInputs {
-        look: look_res.update_look(mouse_acc.delta),
+        look: look_res.update_look(mouse_acc.delta), // new! send raw yaw and pitch
         motion: Vec2 {
             x: rwd - lwd,
             y: fwd - bwd,
         },
         jump: keys.pressed(KeyCode::Space), // TODO: configurable inputs
     };
+}
+
+/*
+ * Simulate Motion
+ */
+
+fn client_player_motion(
+    mut players: Query<
+        (
+            &mut Rotation,
+            &mut LinearVelocity,
+            &ActionState<protocol::PlayerInputs>,
+        ),
+        With<Predicted>,
+    >,
+) {
+    players.iter_mut().for_each(|(mut rot, mut vel, action)| {
+        shared::apply_input(&mut rot, &mut vel, &action.0);
+    })
 }

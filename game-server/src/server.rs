@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use avian3d::dynamics::rigid_body::LinearVelocity;
-use avian3d::physics_transform::Position;
+use avian3d::physics_transform::{Position, Rotation};
 use bevy::prelude::*;
 use game_protocol::{protocol, shared, world};
 use lightyear::input::server::{authorize_controlled_targets, InputValidationAppExt};
@@ -25,7 +25,7 @@ impl Plugin for ServerPlugin {
         });
         app.add_observer(on_connect);
 
-        app.add_systems(FixedUpdate, movement);
+        app.add_systems(FixedUpdate, server_player_motion);
 
         // this is not default, but prevents clients from controlling
         // entities they shouldn't be on the server
@@ -100,8 +100,14 @@ fn on_connect(
     ));
 }
 
-fn movement(mut query: Query<(&mut LinearVelocity, &ActionState<protocol::PlayerInputs>)>) {
-    query.iter_mut().for_each(|(mut vel, action)| {
-        shared::apply_input(&mut vel, &action.0);
+fn server_player_motion(
+    mut players: Query<(
+        &mut Rotation,
+        &mut LinearVelocity,
+        &ActionState<protocol::PlayerInputs>,
+    )>,
+) {
+    players.iter_mut().for_each(|(mut rot, mut vel, action)| {
+        shared::apply_input(&mut rot, &mut vel, &action.0);
     })
 }
