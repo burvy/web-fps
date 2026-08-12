@@ -7,11 +7,15 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
-use bevy::prelude::*;
+use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 use game_protocol::{protocol, shared};
 use lightyear::{
     netcode::{client_plugin::NetcodeConfig, Key, NetcodeClient},
-    prelude::{client::ClientPlugins, input::native::InputMarker, *},
+    prelude::{
+        client::ClientPlugins,
+        input::native::{ActionState, InputMarker},
+        *,
+    },
     webtransport::client::WebTransportClientIo,
 };
 
@@ -24,8 +28,10 @@ impl Plugin for NetPlugin {
         app.add_plugins(ClientPlugins {
             tick_duration: Duration::from_secs_f64(protocol::TIMESTEP),
         });
+        // Networking
         app.add_systems(Startup, connect);
-        // Newly-added entities
+
+        // Client side (frame rate update)
         app.add_systems(
             Update,
             (
@@ -33,9 +39,13 @@ impl Plugin for NetPlugin {
                 draw_players, // draw visually
             ),
         );
+
         // Observer logic
         app.add_observer(detect_replicate_player);
         app.add_observer(detect_replicate_our_player);
+
+        // Client-server interface (tick rate update)
+        app.add_systems(FixedUpdate, buffer_input);
     }
 }
 
@@ -118,4 +128,47 @@ fn detect_replicate_player(player: On<Add, protocol::PlayerMarker>) {
 fn detect_replicate_our_player(our_player: On<Add, Controlled>, mut cmds: Commands) {
     cmds.entity(our_player.entity)
         .insert(InputMarker::<protocol::PlayerInputs>::default());
+}
+
+/*
+ * Player input
+ */
+
+/// Player input for KEYBOARD for now!
+/// TODO: allow input for other devices (mobile?)
+/// TODO: allow configurable input controls
+fn buffer_input(
+    mut action: Single<
+        &mut ActionState<protocol::PlayerInputs>,
+        With<InputMarker<protocol::PlayerInputs>>,
+    >,
+    keys: Res<ButtonInput<KeyCode>>,
+    mouse_look: Res<AccumulatedMouseMotion>,
+) {
+    // TODO: configurable inputs
+    let fwd = f32_bool_conv(keys.pressed(KeyCode::KeyW));
+    let bwd = f32_bool_conv(keys.pressed(KeyCode::KeyS));
+    let rwd = f32_bool_conv(keys.pressed(KeyCode::KeyD));
+    let lwd = f32_bool_conv(keys.pressed(KeyCode::KeyA));
+
+    action.0 = protocol::PlayerInputs {
+        look: mouse_look.delta,
+        motion: Vec2 {
+            x: rwd - lwd,
+            y: fwd - bwd,
+        },
+        jump: keys.pressed(KeyCode::Space), // TODO: configurable inputs
+    };
+}
+
+/// preconditions:
+///     `condition` is a boolean.
+/// postconditions:
+///     returns 1.0 if true, 0.0 if false.
+fn f32_bool_conv(condition: bool) -> f32 {
+    if condition {
+        1.0
+    } else {
+        0.0
+    }
 }
