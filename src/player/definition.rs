@@ -15,10 +15,9 @@ pub struct PlayerInfo {
 impl PlayerInfo {
     /// Updates the current yaw and pitch based on mouse motion
     /// accumulation
-    pub fn update_look(&mut self, accumulation: Vec2) -> Vec2 {
+    pub fn update_look(&mut self, accumulation: Vec2) {
         self.look.x += accumulation.x * SENSITIVITY;
         self.look.y += accumulation.y * SENSITIVITY;
-        self.look
     }
 }
 
