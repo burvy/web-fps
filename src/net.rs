@@ -47,7 +47,7 @@ impl Plugin for NetPlugin {
 
         // Client-server interface (tick rate update)
         app.add_systems(
-            FixedUpdate,
+            FixedPreUpdate,
             buffer_input.in_set(InputSystems::WriteClientInputs),
         );
     }
