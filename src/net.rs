@@ -179,7 +179,8 @@ fn buffer_input(
             x: rwd - lwd,
             y: fwd - bwd,
         },
-        jump: keys.pressed(KeyCode::Space), // TODO: configurable inputs
+        // TODO: Add grounded check server side
+        jump: keys.just_pressed(KeyCode::Space), // TODO: configurable inputs
     };
 }
 

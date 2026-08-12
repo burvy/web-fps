@@ -57,5 +57,8 @@ pub fn apply_input(
     // TODO: make the player move in the direction they are looking
     velocity.0.x = motion.x;
     velocity.0.z = motion.y;
-    // TODO: add jump input when we get to it
+    // TODO: add grounded check
+    if input.jump {
+        velocity.0.y = JUMP_VEL
+    }
 }

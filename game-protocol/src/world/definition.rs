@@ -2,7 +2,7 @@ use avian3d::prelude::*;
 use bevy::prelude::*;
 
 pub const BASEPLATE_LENGTH: f32 = 50.0;
-pub const BASEPLATE_THICKNESS: f32 = 0.1;
+pub const BASEPLATE_THICKNESS: f32 = 5.0;
 
 #[derive(Bundle)]
 pub struct Baseplate {
