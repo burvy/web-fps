@@ -51,9 +51,11 @@ pub fn apply_input(
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
 
+    // TODO: Allow the camera to look around, but only rotate the body on yaw
     // rotation.x = input.look.x;
     rotation.y = input.look.y;
 
+    // TODO: make the player move in the direction they are looking
     velocity.0.x = motion.x;
     velocity.0.z = motion.y;
     // TODO: add jump input when we get to it
