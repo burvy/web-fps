@@ -104,7 +104,7 @@ fn server_player_motion(
     mut players: Query<(
         &mut Rotation,
         &mut LinearVelocity,
-        Entity,
+        Entity, // TODO: Remove logging
         &ActionState<protocol::PlayerInputs>,
     )>,
 ) {
@@ -112,6 +112,7 @@ fn server_player_motion(
         .iter_mut()
         .for_each(|(mut rot, mut vel, entity, action)| {
             if action.motion != Vec2::ZERO {
+                // TODO: Remove logging
                 print!("entity: {:?} is moving: {:?}\n", entity, action.motion);
             }
             shared::apply_input(&mut rot, &mut vel, &action.0);
