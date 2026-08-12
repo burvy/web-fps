@@ -36,7 +36,7 @@ impl Plugin for NetPlugin {
         app.add_systems(
             Update,
             (
-                add_physics,  // prediction
+                add_physics,  // simulation
                 draw_players, // draw visually
             ),
         );
