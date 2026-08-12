@@ -148,7 +148,6 @@ fn detect_replicate_player(player: On<Add, protocol::PlayerMarker>) {
 
 /// Logic to run when our designated controlled player joins
 fn detect_replicate_our_player(our_player: On<Add, Controlled>, mut cmds: Commands) {
-    info!("I control player {:?}!", our_player.entity); // TODO: Remove logging
     cmds.entity(our_player.entity)
         .insert(InputMarker::<protocol::PlayerInputs>::default());
 }
