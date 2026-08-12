@@ -147,10 +147,10 @@ fn buffer_input(
     mouse_look: Res<AccumulatedMouseMotion>,
 ) {
     // TODO: configurable inputs
-    let fwd = f32_bool_conv(keys.pressed(KeyCode::KeyW));
-    let bwd = f32_bool_conv(keys.pressed(KeyCode::KeyS));
-    let rwd = f32_bool_conv(keys.pressed(KeyCode::KeyD));
-    let lwd = f32_bool_conv(keys.pressed(KeyCode::KeyA));
+    let fwd = f32::from(keys.pressed(KeyCode::KeyW));
+    let bwd = f32::from(keys.pressed(KeyCode::KeyS));
+    let rwd = f32::from(keys.pressed(KeyCode::KeyD));
+    let lwd = f32::from(keys.pressed(KeyCode::KeyA));
 
     action.0 = protocol::PlayerInputs {
         look: mouse_look.delta,
@@ -160,16 +160,4 @@ fn buffer_input(
         },
         jump: keys.pressed(KeyCode::Space), // TODO: configurable inputs
     };
-}
-
-/// preconditions:
-///     `condition` is a boolean.
-/// postconditions:
-///     returns 1.0 if true, 0.0 if false.
-fn f32_bool_conv(condition: bool) -> f32 {
-    if condition {
-        1.0
-    } else {
-        0.0
-    }
 }
