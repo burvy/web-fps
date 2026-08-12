@@ -51,7 +51,7 @@ pub fn apply_input(
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
 
-    rotation.x = input.look.x;
+    // rotation.x = input.look.x;
     rotation.y = input.look.y;
 
     velocity.0.x = motion.x;

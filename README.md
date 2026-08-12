@@ -171,6 +171,9 @@ multiplying by `WALKSPEED`, then setting the entity's velocity to that.
 Note that we will touch motion on the `x` and `z` axes, but we leave `y` to the physics system, it 
 uses it for gravity.
 
+We will also modify the rotation of the object in accordance to the yaw and pitch 
+sent by the player in the `PlayerInputs` `ActionState`.
+
 ### Replicate
 Replication is for state that one side owns and changes. Static constants can 
 just be put in `game-protocol` for both sides to compile into their builds to 

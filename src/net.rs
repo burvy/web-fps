@@ -23,6 +23,11 @@ use lightyear::{
 
 const CLIENT_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0);
 
+/// Mouse sensitivity constant
+/// Can be kept client side for now since it should be configurable later
+/// TODO: Make configurable
+const SENSITIVITY: f32 = 0.0025;
+
 pub struct NetPlugin;
 
 impl Plugin for NetPlugin {
@@ -147,8 +152,8 @@ impl PlayerLook {
     /// Updates the current yaw and pitch based on mouse motion
     /// accumulation
     fn update_look(&mut self, accumulation: Vec2) -> Vec2 {
-        self.0.x += accumulation.x;
-        self.0.y += accumulation.y;
+        self.0.x += accumulation.x * SENSITIVITY;
+        self.0.y += accumulation.y * SENSITIVITY;
         self.0
     }
 }
