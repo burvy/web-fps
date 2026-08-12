@@ -16,7 +16,11 @@ impl Default for Baseplate {
         Self {
             body: RigidBody::Static,
             collider: Collider::cuboid(BASEPLATE_LENGTH, BASEPLATE_THICKNESS, BASEPLATE_LENGTH),
-            position: Position(Vec3::ZERO),
+            position: Position(Vec3 {
+                x: 0.0,
+                y: -5.0,
+                z: 0.0,
+            }),
         }
     }
 }

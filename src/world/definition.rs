@@ -17,7 +17,7 @@ pub fn build_baseplate(
             BASEPLATE_THICKNESS,
             BASEPLATE_LENGTH,
         ))),
-        MeshMaterial3d::<StandardMaterial>(mats.add(Color::WHITE)),
+        MeshMaterial3d::<StandardMaterial>(mats.add(Color::srgb_u8(255, 128, 64))),
     ));
     cmds.spawn((
         DirectionalLight::default(),
