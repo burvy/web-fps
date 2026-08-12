@@ -110,10 +110,7 @@ fn draw_players(
 ) {
     players.iter().for_each(|player| {
         cmds.entity(player).queue_apply_scene(bsn! {
-            Mesh3d(asset_value(Capsule3d {
-                radius: shared::PLAYER_RADIUS, // defines hemisphere radius too
-                half_length: shared::PLAYER_LENGTH / 2.0,
-            }))
+            Mesh3d(asset_value(Capsule3d::new(shared::PLAYER_RADIUS, shared::PLAYER_LENGTH)))
             MeshMaterial3d::<StandardMaterial>(asset_value(Color::WHITE))
         });
     });
