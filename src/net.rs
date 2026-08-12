@@ -8,7 +8,7 @@ use std::{
 };
 
 use avian3d::{dynamics::rigid_body::LinearVelocity, physics_transform::Rotation};
-use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
+use bevy::prelude::*;
 use game_protocol::{protocol, shared};
 use lightyear::{
     input::client::InputSystems,
@@ -50,7 +50,6 @@ impl Plugin for NetPlugin {
         app.add_observer(detect_replicate_our_player);
 
         // Client-server interface (tick rate update)
-        app.insert_resource(PlayerLook(Vec2::default())); // yaw and pitch
         app.add_systems(
             FixedPreUpdate,
             buffer_input.in_set(InputSystems::WriteClientInputs),

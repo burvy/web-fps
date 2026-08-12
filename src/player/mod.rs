@@ -11,10 +11,11 @@ impl Plugin for PlayerPlugin {
         // app.add_systems(Startup, definition::player.spawn());
 
         app.insert_resource(definition::PlayerInfo {
+            look: Vec2::ZERO,
             paused: false,
             ..default()
         });
 
-        app.add_systems(Update, logic::toggle_pause);
+        app.add_systems(Update, (logic::toggle_pause, logic::rotate_player_resource));
     }
 }

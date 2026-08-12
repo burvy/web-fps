@@ -30,7 +30,7 @@ pub fn toggle_pause(
 
 /// Stores the accumulated mouse motion in the PlayerInfo resource
 pub fn rotate_player_resource(
-    mut look_res: definition::PlayerInfo,
+    mut look_res: ResMut<definition::PlayerInfo>,
     mouse_mot_res: Res<AccumulatedMouseMotion>,
 ) {
     look_res.update_look(mouse_mot_res.delta);
