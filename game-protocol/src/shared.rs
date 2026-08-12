@@ -52,8 +52,8 @@ pub fn apply_input(
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
 
     // TODO: Allow the camera to look around, but only rotate the body on yaw
-    // rotation.x = input.look.x;
-    rotation.y = input.look.y;
+    rotation.x = input.look.x;
+    // rotation.y = input.look.y;
 
     // TODO: make the player move in the direction they are looking
     velocity.0.x = motion.x;

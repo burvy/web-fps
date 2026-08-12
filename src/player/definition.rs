@@ -1,9 +1,25 @@
 use bevy::prelude::*;
 
+/// Mouse sensitivity constant
+/// Can be kept client side for now since it should be configurable later
+/// TODO: Make configurable
+const SENSITIVITY: f32 = 0.0025;
+
 /// Resource to store client-side player info
 #[derive(Resource, Default)]
 pub struct PlayerInfo {
     pub paused: bool,
+    pub look: Vec2,
+}
+
+impl PlayerInfo {
+    /// Updates the current yaw and pitch based on mouse motion
+    /// accumulation
+    pub fn update_look(&mut self, accumulation: Vec2) -> Vec2 {
+        self.look.x += accumulation.x * SENSITIVITY;
+        self.look.y += accumulation.y * SENSITIVITY;
+        self.look
+    }
 }
 
 // /// Spawn client-side things
