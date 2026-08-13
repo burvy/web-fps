@@ -61,7 +61,7 @@ pub fn apply_input(
     // quaternion operates on unit vector to rotate it
     let vel_all = look_x * Vec3::new(motion.x, 0.0, motion.y);
     velocity.0.x = vel_all.x;
-    velocity.0.z = vel_all.y;
+    velocity.0.z = vel_all.z;
     // TODO: add grounded check
     if input.jump {
         velocity.0.y = JUMP_VEL
