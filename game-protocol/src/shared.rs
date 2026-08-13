@@ -1,6 +1,8 @@
 //! Shared
 //! Shared game logic/configuration between client and server
 
+use std::ops::Mul;
+
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -51,12 +53,15 @@ pub fn apply_input(
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
 
+    // direction player is looking
+    let look_x = Quat::from_rotation_y(input.look.x);
     // TODO: Allow the camera to look around, but only rotate the body on yaw
-    *rotation = Rotation(Quat::from_rotation_y(input.look.x));
+    *rotation = Rotation(look_x);
 
-    // TODO: make the player move in the direction they are looking
-    velocity.0.x = motion.x;
-    velocity.0.z = motion.y;
+    // quaternion operates on unit vector to rotate it
+    let vel_all = look_x * Vec3::new(motion.x, 0.0, motion.y);
+    velocity.0.x = vel_all.x;
+    velocity.0.z = vel_all.y;
     // TODO: add grounded check
     if input.jump {
         velocity.0.y = JUMP_VEL

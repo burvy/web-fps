@@ -177,7 +177,7 @@ fn buffer_input(
         look: look_res.look,
         motion: Vec2 {
             x: rwd - lwd,
-            y: fwd - bwd,
+            y: bwd - fwd, // z motion is flipped in bevy
         },
         // TODO: Add grounded check server side
         jump: keys.just_pressed(KeyCode::Space), // TODO: configurable inputs
