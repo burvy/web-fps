@@ -16,6 +16,14 @@ impl Plugin for PlayerPlugin {
             ..default()
         });
 
-        app.add_systems(Update, (logic::toggle_pause, logic::rotate_player_resource));
+        app.add_systems(Startup, definition::spawn_camera);
+        app.add_systems(
+            Update,
+            (
+                logic::toggle_pause,
+                logic::rotate_player_resource,
+                logic::follow_player,
+            ),
+        );
     }
 }

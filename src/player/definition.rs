@@ -1,6 +1,7 @@
 use std::f32::consts::FRAC_PI_2;
 
 use bevy::prelude::*;
+use lightyear::prelude::*;
 
 /// Mouse sensitivity constant
 /// Can be kept client side for now since it should be configurable later
@@ -22,4 +23,15 @@ impl PlayerInfo {
         self.look.y -= accumulation.y * SENSITIVITY;
         self.look.y = self.look.y.clamp(-FRAC_PI_2, FRAC_PI_2);
     }
+}
+
+#[derive(Component, Clone, Default)]
+pub struct MainPlayerCamera;
+
+pub fn spawn_camera(mut cmds: Commands) {
+    cmds.spawn_scene(bsn! {
+        #Camera
+        Camera3d
+        MainPlayerCamera
+    });
 }

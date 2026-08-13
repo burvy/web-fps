@@ -23,6 +23,9 @@ pub const PLAYER_RADIUS: f32 = 0.45;
 /// Recalculate for the doc if anything changes with these two constants
 pub const PLAYER_LENGTH: f32 = 0.9;
 
+/// Eye height for the camera for client or possible server utilities
+pub const EYE_HEIGHT: f32 = 0.7;
+
 /// Shared player body definition to ensure similar simulation between
 /// client and server
 #[derive(Bundle)]

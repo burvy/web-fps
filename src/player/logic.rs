@@ -1,8 +1,11 @@
+use avian3d::prelude::*;
 use bevy::{
     input::mouse::AccumulatedMouseMotion,
     prelude::*,
     window::{CursorGrabMode, CursorOptions, PrimaryWindow},
 };
+use game_protocol::shared;
+use lightyear::prelude::*;
 
 use crate::player::definition;
 
@@ -34,4 +37,13 @@ pub fn rotate_player_resource(
     mouse_mot_res: Res<AccumulatedMouseMotion>,
 ) {
     look_res.update_look(mouse_mot_res.delta);
+}
+
+pub fn follow_player(
+    mut camera: Single<&mut Transform, With<definition::MainPlayerCamera>>,
+    player: Single<&Position, With<Controlled>>,
+    look_res: Res<definition::PlayerInfo>,
+) {
+    camera.translation = player.0 + Vec3::Y * shared::EYE_HEIGHT;
+    camera.rotation = Quat::from_euler(EulerRot::YXZ, look_res.look.x, -look_res.look.y, 0.0);
 }
