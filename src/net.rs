@@ -39,9 +39,8 @@ impl Plugin for NetPlugin {
         app.add_systems(
             Update,
             (
-                add_physics,     // simulation
-                draw_players,    // draw visually
-                draw_our_player, // logic on our player
+                add_physics,  // simulation
+                draw_players, // draw visually
             ),
         );
 
@@ -120,20 +119,6 @@ fn draw_players(
             Mesh3d(asset_value(Capsule3d::new(shared::PLAYER_RADIUS, shared::PLAYER_LENGTH)))
             MeshMaterial3d::<StandardMaterial>(asset_value(Color::WHITE))
         });
-    });
-}
-
-/// NEW!
-/// Logic to run when we draw our player
-fn draw_our_player(
-    mut cmds: Commands,
-    our_player: Single<Entity, (Added<Predicted>, With<Controlled>)>,
-) {
-    let view = Transform::from_translation(Vec3::new(0.0, 10.0, 20.0));
-    cmds.entity(our_player.entity()).queue_apply_scene(bsn! {
-        #Camera
-        Camera3d
-        template_value(view.looking_at(Vec3::ZERO, Vec3::Y))
     });
 }
 
