@@ -45,5 +45,5 @@ pub fn camera_follow_player(
     look_res: Res<definition::PlayerInfo>,
 ) {
     camera.translation = player.0 + Vec3::Y * shared::EYE_HEIGHT;
-    camera.rotation = Quat::from_euler(EulerRot::YXZ, look_res.look.x, -look_res.look.y, 0.0);
+    camera.rotation = Quat::from_euler(EulerRot::YXZ, look_res.look.x, look_res.look.y, 0.0);
 }

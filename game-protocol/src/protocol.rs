@@ -81,7 +81,7 @@ pub struct PlayerMarker;
 /// component. Thus, PlayerInputs does not need to derive Component.
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Reflect, Default)]
 pub struct PlayerInputs {
-    /// A 2d vector storing raw yaw and pitch (not accumulated)
+    /// A 2d vector storing raw yaw and pitch in rads (not accumulated)
     pub look: Vec2,
     /// A 2d vector representing the player's desired travel direction
     pub motion: Vec2,

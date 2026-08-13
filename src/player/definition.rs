@@ -1,7 +1,6 @@
 use std::f32::consts::FRAC_PI_2;
 
 use bevy::prelude::*;
-use lightyear::prelude::*;
 
 /// Mouse sensitivity constant
 /// Can be kept client side for now since it should be configurable later

@@ -1,8 +1,6 @@
 //! Shared
 //! Shared game logic/configuration between client and server
 
-use std::ops::Mul;
-
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
