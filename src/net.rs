@@ -7,7 +7,9 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
-use avian3d::{dynamics::rigid_body::LinearVelocity, physics_transform::Rotation};
+use avian3d::{
+    dynamics::rigid_body::LinearVelocity, physics_transform::Rotation, spatial_query::ShapeHits,
+};
 use bevy::prelude::*;
 use game_protocol::{protocol, shared};
 use lightyear::{
@@ -178,12 +180,15 @@ fn client_player_motion(
         (
             &mut Rotation,
             &mut LinearVelocity,
+            &ShapeHits,
             &ActionState<protocol::PlayerInputs>,
         ),
         With<Predicted>,
     >,
 ) {
-    players.iter_mut().for_each(|(mut rot, mut vel, action)| {
-        shared::apply_input(&mut rot, &mut vel, &action.0);
-    })
+    players
+        .iter_mut()
+        .for_each(|(mut rot, mut vel, hits, action)| {
+            shared::apply_input(&mut rot, &mut vel, &action.0, !hits.is_empty());
+        })
 }

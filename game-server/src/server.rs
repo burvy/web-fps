@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use avian3d::dynamics::rigid_body::LinearVelocity;
 use avian3d::physics_transform::{Position, Rotation};
+use avian3d::spatial_query::ShapeHits;
 use bevy::prelude::*;
 use game_protocol::{protocol, shared, world};
 use lightyear::input::server::{authorize_controlled_targets, InputValidationAppExt};
@@ -104,10 +105,13 @@ fn server_player_motion(
     mut players: Query<(
         &mut Rotation,
         &mut LinearVelocity,
+        &ShapeHits,
         &ActionState<protocol::PlayerInputs>,
     )>,
 ) {
-    players.iter_mut().for_each(|(mut rot, mut vel, action)| {
-        shared::apply_input(&mut rot, &mut vel, &action.0);
-    })
+    players
+        .iter_mut()
+        .for_each(|(mut rot, mut vel, hits, action)| {
+            shared::apply_input(&mut rot, &mut vel, &action.0, !hits.is_empty());
+        })
 }
