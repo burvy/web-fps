@@ -24,6 +24,12 @@ pub const PLAYER_LENGTH: f32 = 0.9;
 /// Eye height for the camera for client or possible server utilities
 pub const EYE_HEIGHT: f32 = 0.7;
 
+/// Distance from player center to the top of the capsule (don't change)
+pub const PLAYER_HALF_HEIGHT: f32 = PLAYER_LENGTH / 2.0 + PLAYER_RADIUS;
+
+/// Distance to the ground to be considered grounded (tweak if needed)
+pub const GROUND_TOLERANCE: f32 = 0.1;
+
 /// Shared player body definition to ensure similar simulation between
 /// client and server
 #[derive(Bundle)]
@@ -31,6 +37,7 @@ pub struct PlayerBody {
     body: RigidBody,
     collider: Collider,
     locked: LockedAxes,
+    ground_check: ShapeCaster,
 }
 
 impl Default for PlayerBody {
@@ -39,6 +46,13 @@ impl Default for PlayerBody {
             body: RigidBody::Dynamic,
             collider: Collider::capsule(PLAYER_RADIUS, PLAYER_LENGTH),
             locked: LockedAxes::ROTATION_LOCKED,
+            ground_check: ShapeCaster::new(
+                Collider::sphere(PLAYER_RADIUS * 0.9),
+                Vec3::ZERO,
+                Quat::IDENTITY,
+                Dir3::NEG_Y,
+            )
+            .with_max_distance(PLAYER_HALF_HEIGHT - PLAYER_RADIUS * 0.9 + GROUND_TOLERANCE),
         }
     }
 }
