@@ -39,7 +39,7 @@ pub fn rotate_player_resource(
     look_res.update_look(mouse_mot_res.delta);
 }
 
-pub fn follow_player(
+pub fn camera_follow_player(
     mut camera: Single<&mut Transform, With<definition::MainPlayerCamera>>,
     player: Single<&Position, With<Controlled>>,
     look_res: Res<definition::PlayerInfo>,
