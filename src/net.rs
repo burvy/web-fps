@@ -166,8 +166,8 @@ fn buffer_input(
             x: rwd - lwd,
             y: bwd - fwd, // z motion is flipped in bevy
         },
-        // TODO: Add grounded check server side
-        jump: keys.just_pressed(KeyCode::Space), // TODO: configurable inputs
+        // Hold spacebar to jump repeatedly
+        jump: keys.pressed(KeyCode::Space), // TODO: configurable inputs
     };
 }
 
