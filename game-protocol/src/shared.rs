@@ -64,7 +64,7 @@ pub fn apply_input(
     rotation: &mut Rotation,
     velocity: &mut LinearVelocity,
     input: &protocol::PlayerInputs,
-    grounded: bool,
+    grounded: bool, // grounded must be defined by user: `!hits.is_empty()`
 ) {
     // `PlayerInputs` is responsible for declaring which is forward
     let motion = input.motion.clamp_length_max(1.0) * WALKSPEED;
@@ -78,7 +78,8 @@ pub fn apply_input(
     let vel_all = look_x * Vec3::new(motion.x, 0.0, motion.y);
     velocity.0.x = vel_all.x;
     velocity.0.z = vel_all.z;
-    // TODO: add grounded check
+
+    // allow jumping
     if input.jump && grounded {
         velocity.0.y = JUMP_VEL
     }
