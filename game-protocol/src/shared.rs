@@ -7,10 +7,10 @@ use bevy::prelude::*;
 use crate::protocol;
 
 /// Shared walkspeed to ensure similar simulation between client and server
-pub const WALKSPEED: f32 = 5.0;
+pub const WALKSPEED: f32 = 1.3;
 
 /// Shared jump velocity to ensure client-server similarity
-pub const JUMP_VEL: f32 = 10.0; // TODO: should be used when jumping is implemented
+pub const JUMP_VEL: f32 = 3.5;
 
 /// Shared player radius for simulation similarity
 pub const PLAYER_RADIUS: f32 = 0.45;
