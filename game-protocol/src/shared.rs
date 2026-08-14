@@ -8,6 +8,7 @@ use crate::protocol;
 
 /// Shared walkspeed to ensure similar simulation between client and server
 pub const WALKSPEED: f32 = 1.3;
+// TODO: add grounded check
 
 /// Shared jump velocity to ensure client-server similarity
 pub const JUMP_VEL: f32 = 3.5;
