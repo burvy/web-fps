@@ -27,6 +27,9 @@ use crate::player;
 
 const CLIENT_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0);
 
+#[derive(Resource)]
+pub struct CertDigest(pub String);
+
 pub struct NetPlugin;
 
 impl Plugin for NetPlugin {
@@ -66,8 +69,7 @@ impl Plugin for NetPlugin {
  */
 
 /// Handles web handshake and creating a connection to the server
-fn connect(mut cmds: Commands) -> Result {
-    let digest = std::fs::read_to_string("digest.txt")?.trim().to_string();
+fn connect(mut cmds: Commands, digest: Res<CertDigest>) -> Result {
     let auth = Authentication::Manual {
         server_addr: protocol::SERVER_ADDR,
         // TODO: use a more secure id so hackers dont spoof other peoples' ids
@@ -85,7 +87,7 @@ fn connect(mut cmds: Commands) -> Result {
             ReplicationReceiver,
             NetcodeClient::new(auth, NetcodeConfig::default())?,
             WebTransportClientIo {
-                certificate_digest: digest,
+                certificate_digest: digest.0.clone(),
             },
             PredictionManager::default(),
         ))
