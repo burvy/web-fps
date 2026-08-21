@@ -17,8 +17,8 @@ Running: `cargo run -p game-server`
 ## `protocol`
 `game-protocol` contains two main things:  
 `protocol` and `shared`.  
-It may also contain other stuff, for example, `world`, which 
-is in the same category as `shared`.
+It may also contain other stuff, for example, `world`, 
+which is in the same category as `shared`.
 
 This folder contains things that are shared between both server and client 
 for things like simulation, prediction, etc...  
@@ -195,6 +195,28 @@ window for a whole 15ms if `run_loop` and `tick_duration` were both 15ms. On the
 miss by 4ms at worst if `run_loop` is 4ms.
 
 ### `digest.txt`
+The client reads a digest the server gives them, to use as the digest that validates the server's actually 
+the server to connect to. Actual certificate authorities are saved in the browser, and 
+would not require the `digest.txt` to be sent between the client and the server explicitly. 
+This file really only exists to work around not having a certificate authority.
+
+Note that we cannot just send the `digest.txt` over the webtransport connection, to match what we have now 
+with the client and server sharing one directory. We need the digest to actually connect to the webtransport 
+server; the digest comes with actually spawning the client connection:
+
+```rust
+let client = cmds
+    .spawn((
+        Client::default(),
+        // ...
+        WebTransportClientIo {
+            certificate_digest: digest.0.clone(), // <-- HERE!
+        },
+        // ...
+    ))
+    .id();
+cmds.trigger(Connect { entity: client });
+```
 
 # SERVER
 You may notice this line:  
