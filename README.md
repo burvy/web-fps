@@ -198,14 +198,15 @@ miss by 4ms at worst if `run_loop` is 4ms.
 The digest is a SHA-256 fingerprint of the certificate the server signs and is regenerated with every run, 
 which means it shouldn't be committed. 
 
-Note that `hash().to_string()` returns a colon seperated hex like `1a:2b:...`, but `from_hex` wants 
-a 64-character hex. The colon separated hex has 95 characters while the raw hex is 64 characters.  
-That's why you need to strip the colons.
 
 The client reads a digest the server gives them, to use as the digest that validates the server's actually 
 the server to connect to. Actual certificate authorities are saved in the browser, and 
 would not require the `digest.txt` to be sent between the client and the server explicitly. 
 This file really only exists to work around not having a certificate authority.
+
+Note that `hash().to_string()` returns a colon seperated hex like `1a:2b:...`, but `from_hex` wants 
+a 64-character hex. The colon separated hex has 95 characters while the raw hex is 64 characters.  
+That's why you need to strip the colons.
 
 Note that we cannot just send the `digest.txt` over the webtransport connection, to match what we have now 
 with the client and server sharing one directory. We need the digest to actually connect to the webtransport 
@@ -229,7 +230,7 @@ Even if ordering allowed this, an impostor can send their own certificate and th
 pass, making this insecure. 
 
 Once we have an actual certificate authority, which there will be on the release builds, 
-this `digest.txt` workaround is no longer necessary.
+this `digest.txt` workaround is no longer necessary except on the dev build.
 
 # SERVER
 You may notice this line:  
