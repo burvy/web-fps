@@ -4,7 +4,7 @@
 
 use std::{
     net::{IpAddr, Ipv4Addr, SocketAddr},
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::Duration,
 };
 
 use avian3d::{
@@ -72,8 +72,8 @@ impl Plugin for NetPlugin {
 fn connect(mut cmds: Commands, digest: Res<CertDigest>) -> Result {
     let auth = Authentication::Manual {
         server_addr: protocol::SERVER_ADDR,
-        // TODO: use a more secure id so hackers dont spoof other peoples' ids
-        client_id: SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos() as u64,
+        // TODO: replace with more secure id generator
+        client_id: getrandom::u64()?,
         private_key: Key::default(),
         protocol_id: 0,
     };
