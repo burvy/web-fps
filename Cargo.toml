@@ -25,11 +25,9 @@ game-protocol = { path = "game-protocol"} # protocol shared with server (client 
 # Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
 log = { version = "0.4", features = [
     "max_level_debug",
-    "release_max_level_warn",
 ] }
 tracing = { version = "0.1", features = [
     "max_level_debug",
-    "release_max_level_warn",
 ] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
