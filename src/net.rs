@@ -72,7 +72,7 @@ impl Plugin for NetPlugin {
 fn connect(mut cmds: Commands, digest: Res<CertDigest>) -> Result {
     let auth = Authentication::Manual {
         server_addr: protocol::SERVER_ADDR,
-        // TODO: replace with more secure id generator
+        // TODO: Let server assign the client id
         client_id: getrandom::u64()?,
         private_key: Key::default(),
         protocol_id: 0,
