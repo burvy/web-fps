@@ -195,6 +195,9 @@ window for a whole 15ms if `run_loop` and `tick_duration` were both 15ms. On the
 miss by 4ms at worst if `run_loop` is 4ms.
 
 ### `digest.txt`
+The digest is a SHA-256 fingerprint of the certificate the server signs and is regenerated with every run, 
+which means it shouldn't be committed. 
+
 The client reads a digest the server gives them, to use as the digest that validates the server's actually 
 the server to connect to. Actual certificate authorities are saved in the browser, and 
 would not require the `digest.txt` to be sent between the client and the server explicitly. 
@@ -217,6 +220,12 @@ let client = cmds
     .id();
 cmds.trigger(Connect { entity: client });
 ```
+
+Even if ordering allowed this, an impostor can send their own certificate and this would also 
+pass, making this insecure. 
+
+Once we have an actual certificate authority, which there will be on the release builds, 
+this `digest.txt` workaround is no longer necessary.
 
 # SERVER
 You may notice this line:  
