@@ -195,8 +195,17 @@ just be put in `game-protocol` for both sides to compile into their builds to
 save on bandwidth.
 
 ### PredictionTarget
+`PredictionTarget` exists on `server.rs`. The documentation in lightyear itself states that 
+it controls which clients should run client-side prediction for that entity. In our case, we send 
+the `PredictionTarget` signal for all players, because all players are physics objects. Each client 
+predicts every other client's actions and rolls back if incorrect. Though this can cause very jarring 
+jitter, it also means that physics collisions resolve identically everywhere, which wouldn't be possible 
+if we simply send a visual position that doesn't react instantly to collisions. 
 
 ### ControlledBy
+The server sets a certain client id to control a certain entity, and replicates it to that client. 
+The client then gets the `Controlled` marker, which they can use to target themselves for control on 
+their own end. 
 
 ### `run_loop` vs `tick_duration`
 the `run_loop` is a faster loop than `tick_duration`.
