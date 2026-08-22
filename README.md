@@ -12,8 +12,9 @@ Running: `cargo run -p game`
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
 
-Note that this crate targets WASM, and the browser build is, on my machine, driven by a leptos 
-site at `burvy-dev/crates/game-wasm`. See my other repo if you would like to view the implementation. 
+Note that this crate targets WASM, and the browser build is, on my machine, driven by a 
+site at `burvy-dev/crates/game-wasm` (mine is built with Leptos). See my other repo 
+if you would like to view the implementation. 
 Since this is the case, there is no filesystem nor clock.
 
 There also exist 3 different getrandom versions as dependencies within our tree require different 
@@ -22,8 +23,9 @@ versions of getrandom, js -> getrandom@0.2, wasm_js -> getrandom@0.3 and getrand
 WebGL2 is used for the browser, and looks a bit worse than native, without atmosphere, background, SSAO, 
 order independent transparency.
 
-Checking for errors using `cargo check --target wasm32-unknown-unknown` won't help much because most errors 
-surface at runtime.
+Checking for errors using `cargo check --target wasm32-unknown-unknown` won't help much with errors 
+that surface at runtime, especially from `std`, which compiles for WASM but certain calls like filesystem 
+operations and attempting to access system time are not possible on the web and break.
 
 # BASICS
 
