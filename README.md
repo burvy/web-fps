@@ -203,9 +203,13 @@ jitter, it also means that physics collisions resolve identically everywhere, wh
 if we simply send a visual position that doesn't react instantly to collisions. 
 
 ### ControlledBy
-The server sets a certain client id to control a certain entity, and replicates it to that client. 
-The client then gets the `Controlled` marker, which they can use to target themselves for control on 
-their own end. `ControlledBy` essentially allows a certain client to *own* an entity on the server. 
+The server sets a certain `Entity` with `ReplicationSender` to control a certain entity here, 
+and replicates it to everyone, with one client getting the `Controlled` marker, which they can 
+use to target themselves for control on their own end. `ControlledBy` essentially allows a 
+certain client to *own* an entity on the server. 
+
+The `lifetime` field on `ControlledBy` determines what happens after disconnect, and for our case, 
+with our `SessionBased` lifetime, we simply just despawn the entity.
 
 For `PredictionTarget` and `ControlledBy`, they can essentially be described as such:  
 `ControlledBy`: Who owns the entity
