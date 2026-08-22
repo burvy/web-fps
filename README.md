@@ -205,7 +205,11 @@ if we simply send a visual position that doesn't react instantly to collisions.
 ### ControlledBy
 The server sets a certain client id to control a certain entity, and replicates it to that client. 
 The client then gets the `Controlled` marker, which they can use to target themselves for control on 
-their own end. 
+their own end. `ControlledBy` essentially allows a certain client to *own* an entity on the server. 
+
+For `PredictionTarget` and `ControlledBy`, they can essentially be described as such:  
+`ControlledBy`: Who owns the entity
+`PredictionTarget`: Who simulates the entity early
 
 ### `run_loop` vs `tick_duration`
 the `run_loop` is a faster loop than `tick_duration`.
