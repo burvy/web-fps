@@ -48,6 +48,19 @@ fn startup(mut cmds: Commands) -> Result {
     std::fs::write("digest.txt", &digest_hex)?;
     info!("digest written: {}", digest);
 
+    // Server currently writes to own current working directory,
+    // which clients cant see over the network, but they can fetch
+    // a file over the network.
+    // (shell..)
+    // $env:DIGEST_COPY_PATH = "Z:\3. Rust Projects\burvy-dev\dist\game\digest.txt"
+    // cargo run -p game-server
+    // (in another shell..)
+    // curl.exe http://127.0.0.1:8080/game/digest.txt
+    if let Ok(path) = std::env::var("DIGEST_COPY_PATH") {
+        std::fs::write(&path, &digest_hex)?;
+        info!("digest copied to: {}", path)
+    }
+
     let server = cmds
         .spawn((
             NetcodeServer::new(NetcodeConfig::default()),
