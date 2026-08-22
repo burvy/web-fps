@@ -9,7 +9,9 @@ edition = "2024"
 [dependencies]
 # rendering/window is required here, the client is not headless
 avian3d = "0.7.0"
-bevy = "0.19"
+# cut down on the size of bevy
+# TODO: re-add necessary features, probably want audio..
+bevy = { version = "0.19", default-features = false, features = ["3d"]}
 lightyear = { version = "0.28.0", default-features = false, features = [
     "std",
     "client",
