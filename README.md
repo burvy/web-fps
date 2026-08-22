@@ -12,6 +12,19 @@ Running: `cargo run -p game`
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
 
+Note that this crate targets WASM, and the browser build is, on my machine, driven by a leptos 
+site at `burvy-dev/crates/game-wasm`. See my other repo if you would like to view the implementation. 
+Since this is the case, there is no filesystem nor clock.
+
+There also exist 3 different getrandom versions as dependencies within our tree require different 
+versions of getrandom, js -> getrandom@0.2, wasm_js -> getrandom@0.3 and getrandom@0.4
+
+WebGL2 is used for the browser, and looks a bit worse than native, without atmosphere, background, SSAO, 
+order independent transparency.
+
+Checking for errors using `cargo check --target wasm32-unknown-unknown` won't help much because most errors 
+surface at runtime.
+
 # BASICS
 
 ## `protocol`
@@ -231,6 +244,9 @@ pass, making this insecure.
 
 Once we have an actual certificate authority, which there will be on the release builds, 
 this `digest.txt` workaround is no longer necessary except on the dev build.
+
+In the WASM build, the digest is passed when the game is started up rather than stored in a file because 
+WASM builds do not have a filesystem.
 
 # SERVER
 You may notice this line:  
