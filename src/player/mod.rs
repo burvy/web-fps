@@ -12,7 +12,7 @@ impl Plugin for PlayerPlugin {
 
         app.insert_resource(definition::PlayerInfo {
             look: Vec2::ZERO,
-            paused: false,
+            paused: true,
             ..default()
         });
 
