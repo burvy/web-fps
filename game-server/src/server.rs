@@ -41,6 +41,7 @@ fn startup(mut cmds: Commands) -> Result {
         "localhost".to_string(),
         "127.0.0.1".to_string(),
         "::1".to_string(),
+        "174.175.161.63".to_string(),
     ];
     let identity = Identity::self_signed(valid_addresses)?;
     let digest = identity.certificate_chain().as_slice()[0].hash();
@@ -64,7 +65,7 @@ fn startup(mut cmds: Commands) -> Result {
     let server = cmds
         .spawn((
             NetcodeServer::new(NetcodeConfig::default()),
-            LocalAddr(protocol::SERVER_ADDR),
+            LocalAddr(protocol::SERVER_BIND_ADDR),
             WebTransportServerIo {
                 certificate: identity,
             },
