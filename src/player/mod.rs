@@ -23,6 +23,7 @@ impl Plugin for PlayerPlugin {
                 logic::toggle_pause,
                 logic::rotate_player_resource,
                 logic::camera_follow_player,
+                logic::grab_on_click,
             ),
         );
     }
