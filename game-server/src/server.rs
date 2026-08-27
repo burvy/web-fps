@@ -52,11 +52,9 @@ fn startup(mut cmds: Commands) -> Result {
     // Server currently writes to own current working directory,
     // which clients cant see over the network, but they can fetch
     // a file over the network.
-    // (shell..)
-    // $env:DIGEST_COPY_PATH = "Z:\3. Rust Projects\burvy-dev\dist\game\digest.txt"
-    // cargo run -p game-server
-    // (in another shell..)
-    // curl.exe http://127.0.0.1:8080/game/digest.txt
+    //
+    // run the executable like so:
+    // game-server.exe C:\Users\Burvy\Desktop\burvy-dev\dist\game\digest.txt
     match std::env::args().nth(1) {
         Some(path) => {
             std::fs::write(&path, &digest_hex)?;
