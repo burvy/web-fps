@@ -15,10 +15,18 @@ pub fn toggle_pause(
     mut player_info: ResMut<definition::PlayerInfo>,
     key: Res<ButtonInput<KeyCode>>,
 ) {
-    if key.just_pressed(KeyCode::Escape) && !player_info.paused {
-        player_info.paused = true;
-        cursor_options.grab_mode = CursorGrabMode::None;
-        cursor_options.visible = true;
+    if key.just_pressed(KeyCode::Escape) {
+        player_info.paused = !player_info.paused;
+        match cursor_options.grab_mode {
+            CursorGrabMode::None => {
+                cursor_options.grab_mode = CursorGrabMode::Locked;
+            }
+            CursorGrabMode::Locked => cursor_options.grab_mode = CursorGrabMode::None,
+            _ => {
+                info!("how???")
+            }
+        }
+        cursor_options.visible = !cursor_options.visible;
     }
 }
 
