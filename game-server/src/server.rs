@@ -57,9 +57,12 @@ fn startup(mut cmds: Commands) -> Result {
     // cargo run -p game-server
     // (in another shell..)
     // curl.exe http://127.0.0.1:8080/game/digest.txt
-    if let Ok(path) = std::env::var("DIGEST_COPY_PATH") {
-        std::fs::write(&path, &digest_hex)?;
-        info!("digest copied to: {}", path)
+    match std::env::args().nth(1) {
+        Some(path) => {
+            std::fs::write(&path, &digest_hex)?;
+            info!("digest published to {}", path);
+        }
+        None => warn!("no digest given, clients are unable to connect"),
     }
 
     let server = cmds
