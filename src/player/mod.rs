@@ -12,7 +12,7 @@ impl Plugin for PlayerPlugin {
 
         app.insert_resource(definition::PlayerInfo {
             look: Vec2::ZERO,
-            paused: false,
+            paused: true,
             ..default()
         });
 
@@ -21,7 +21,7 @@ impl Plugin for PlayerPlugin {
             Update,
             (
                 logic::grab_on_click,
-                logic::toggle_pause,
+                logic::pause_on_esc,
                 logic::rotate_player_resource,
                 logic::camera_follow_player,
             ),

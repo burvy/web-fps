@@ -10,23 +10,15 @@ use lightyear::prelude::*;
 use crate::player::definition;
 
 /// Unlock on escape
-pub fn toggle_pause(
+pub fn pause_on_esc(
     mut cursor_options: Single<&mut CursorOptions, With<PrimaryWindow>>,
     mut player_info: ResMut<definition::PlayerInfo>,
     key: Res<ButtonInput<KeyCode>>,
 ) {
-    if key.just_pressed(KeyCode::Escape) {
-        player_info.paused = !player_info.paused;
-        match cursor_options.grab_mode {
-            CursorGrabMode::None => {
-                cursor_options.grab_mode = CursorGrabMode::Locked;
-            }
-            CursorGrabMode::Locked => cursor_options.grab_mode = CursorGrabMode::None,
-            _ => {
-                info!("how???")
-            }
-        }
-        cursor_options.visible = !cursor_options.visible;
+    if key.just_pressed(KeyCode::Escape) && !player_info.paused {
+        player_info.paused = true;
+        cursor_options.grab_mode = CursorGrabMode::None;
+        cursor_options.visible = true;
     }
 }
 
