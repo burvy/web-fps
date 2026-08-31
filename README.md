@@ -277,3 +277,27 @@ app.add_input_validator(
 This line is not enabled by default, 
 but it prevents clients from tricking the server into thinking they are actually another 
 entity. This prevents hackers from causing chaos by spoofing entity ids. Don't delete it!
+
+# IP Certificate
+An IP Certificate is the same object as a TLS Certificate, only different by one field, which prevents 
+it from working on browsers like Safari.  
+
+A Certificate Authority (CA) asserts that a certain *public key* belongs to this *name*. The browser 
+is then responsible for checking that the name they were asked to visit appears in 
+the certificate.  
+
+Names are typed, and live in the Subject Alternative Name extension, which carry their type tags:  
+`dnsName` holds something like `webtrans.burvy.dev`  
+`ipAddress` holds an IP address, like `123.456.768.90`  
+
+As of 8/31/26, `client.rs:66` uses ipAddress, so the browser looks for an ipAddress SAN, 
+but my webtrans.burvy.dev certificate only has a dnsName, which does not say anything 
+about ipAddress. 
+
+This was rare until recently, because it was easier to verify who owned a domain as 
+opposed to owning an ip address, as domains can be traced through registrars and 
+stuff like WHOIS. Let's Encrypt issued SANs only [recently](https://letsencrypt.org/2025/01/16/6-day-and-ip-certs)
+
+It's only 6 days because IP addresses last for a short time and can be shuffled around easier than 
+domains. You can only prove you control an IP address using `http-01` and `tls-alpn-01` for now, 
+`dns-01` does not work.

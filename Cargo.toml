@@ -32,6 +32,7 @@ tracing = { version = "0.1", features = [
     "max_level_debug",
 ] }
 getrandom = "0.4.3"
+tokio = { version = "1.53.1", features = ["rt", "fs"] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 getrandom = { version = "0.4.3", features = ["wasm_js"] }

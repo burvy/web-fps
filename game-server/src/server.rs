@@ -15,6 +15,7 @@ use lightyear::{
     netcode::{server_plugin::NetcodeConfig, NetcodeServer},
     webtransport::server::WebTransportServerIo,
 };
+use tokio;
 
 pub struct ServerPlugin;
 
@@ -43,7 +44,10 @@ fn startup(mut cmds: Commands) -> Result {
         "::1".to_string(),
         "174.175.161.63".to_string(),
     ];
-    let identity = Identity::self_signed(valid_addresses)?;
+    let identity = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()?
+        .block_on(Identity::load_pemfiles(CERT_PATH, KEY_PATH))?;
     let digest = identity.certificate_chain().as_slice()[0].hash();
     let digest_hex = digest.to_string().replace(":", "");
     std::fs::write("digest.txt", &digest_hex)?;

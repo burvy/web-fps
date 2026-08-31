@@ -87,7 +87,7 @@ fn connect(mut cmds: Commands, digest: Res<CertDigest>) -> Result {
             ReplicationReceiver,
             NetcodeClient::new(auth, NetcodeConfig::default())?,
             WebTransportClientIo {
-                certificate_digest: digest.0.clone(),
+                certificate_digest: String::new(),
             },
             PredictionManager::default(),
         ))
