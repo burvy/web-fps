@@ -85,7 +85,7 @@ fn on_connect(
     query: Query<&RemoteId, With<ClientOf>>, // query `RemoteId`s that connected to us
     mut cmds: Commands,
 ) {
-    let Ok(remote_id) = query.get(trigger.entity) else {
+    if !query.contains(trigger.entity) {
         // client connected that isn't a client of us
         return;
     };
