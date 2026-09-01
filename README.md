@@ -1,5 +1,6 @@
 # Web FPS Game
 A game for my website at [burvy.dev](https://burvy.dev/)!  
+You can also visit the game directly through [this link](https://burvy.dev/game)
 
 # Building/Running
 `game` and `game-server` must be built and ran separately  
