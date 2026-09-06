@@ -13,6 +13,15 @@ Running: `cargo run -p game`
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
 
+# For me
+## web-fps
+cargo build -p game-server --release
+-> target\x86_64-pc-windows-msvc\release\game-server.exe
+
+## burvy-dev
+.\build.ps1
+-> dist\
+
 Note that this crate targets WASM, and the browser build is, on my machine, driven by a 
 site at `burvy-dev/crates/game-wasm` (mine is built with Leptos). See my other repo 
 if you would like to view the implementation. 

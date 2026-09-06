@@ -15,7 +15,6 @@ use lightyear::{
     netcode::{server_plugin::NetcodeConfig, NetcodeServer},
     webtransport::server::WebTransportServerIo,
 };
-use tokio;
 
 // use powershell:
 // Install-Module -Name Posh-ACME -Scope CurrentUser
@@ -55,12 +54,6 @@ impl Plugin for ServerPlugin {
 }
 
 fn startup(mut cmds: Commands) -> Result {
-    let valid_addresses = vec![
-        "localhost".to_string(),
-        "127.0.0.1".to_string(),
-        "::1".to_string(),
-        "174.175.161.63".to_string(),
-    ];
     let identity = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()?
