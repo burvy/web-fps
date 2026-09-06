@@ -15,14 +15,14 @@ Running: `cargo run -p game-server`
 
 # For me
 ## web-fps
-cargo build -p game-server --release
--> target\x86_64-pc-windows-msvc\release\game-server.exe
+`cargo build -p game-server --release`  
+-> `target\x86_64-pc-windows-msvc\release\game-server.exe`  
 
-The server must be run on wherever the website is hosted
+The server must be run on wherever the website is hosted  
 
 ## burvy-dev
-.\build.ps1
--> dist\
+`.\build.ps1`  
+-> `dist\`  
 
 The client build is in burvy.dev since it is a web client and must be compiled into wasm on the website.  
 The build script builds the client with trunk and links it to the output wasm.
