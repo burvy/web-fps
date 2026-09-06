@@ -17,6 +17,17 @@ use lightyear::{
 };
 use tokio;
 
+// use powershell:
+// Install-Module -Name Posh-ACME -Scope CurrentUser
+// Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+// Import-Module Posh-ACME
+// Set-PAServer LE_PROD
+// New-PACertificate '123.456.789.10' `
+//   -Plugin WebRoot `
+//   -PluginArgs @{ WRPath = 'C:\acme-challenge' } `
+//   -Profile shortlived `
+//   -AcceptTOS `
+//   -Contact 'name@email.com'
 const KEY_PATH: &str =
     r"C:\Users\Burvy\AppData\Local\Posh-ACME\LE_PROD\3716529536\174.175.161.63\cert.key";
 const CERT_PATH: &str =
