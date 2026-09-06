@@ -18,9 +18,14 @@ Running: `cargo run -p game-server`
 cargo build -p game-server --release
 -> target\x86_64-pc-windows-msvc\release\game-server.exe
 
+The server must be run on wherever the website is hosted
+
 ## burvy-dev
 .\build.ps1
 -> dist\
+
+The client build is in burvy.dev since it is a web client and must be compiled into wasm on the website.  
+The build script builds the client with trunk and links it to the output wasm.
 
 Note that this crate targets WASM, and the browser build is, on my machine, driven by a 
 site at `burvy-dev/crates/game-wasm` (mine is built with Leptos). See my other repo 
@@ -289,8 +294,8 @@ but it prevents clients from tricking the server into thinking they are actually
 entity. This prevents hackers from causing chaos by spoofing entity ids. Don't delete it!
 
 # IP Certificate
-An IP Certificate is the same object as a TLS Certificate, only different by one field, which prevents 
-it from working on browsers like Safari.  
+An IP Certificate is the same object as a TLS Certificate, only different by one field, which allows
+it to work on browsers like Safari.  
 
 A Certificate Authority (CA) asserts that a certain *public key* belongs to this *name*. The browser 
 is then responsible for checking that the name they were asked to visit appears in 
@@ -306,7 +311,7 @@ about ipAddress.
 
 This was rare until recently, because it was easier to verify who owned a domain as 
 opposed to owning an ip address, as domains can be traced through registrars and 
-stuff like WHOIS. Let's Encrypt issued SANs only [recently](https://letsencrypt.org/2025/01/16/6-day-and-ip-certs)
+stuff like WHOIS. Let's Encrypt issued SANs only [recently](https://letsencrypt.org/2025/07/01/issuing-our-first-ip-address-certificate)
 
 It's only 6 days because IP addresses last for a short time and can be shuffled around easier than 
 domains. You can only prove you control an IP address using `http-01` and `tls-alpn-01` for now, 
