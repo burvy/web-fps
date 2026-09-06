@@ -27,5 +27,6 @@ lightyear = { version = "0.28.0", default-features = false, features = [
     "prediction",
     "interpolation",
 ]}
+tokio = { version = "1.53.1", features = ["rt"] }
 # serde is not required as serialization happens in game-protocol
 game-protocol = { path = "../game-protocol"} # protocol shared with client

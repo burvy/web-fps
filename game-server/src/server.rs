@@ -17,6 +17,11 @@ use lightyear::{
 };
 use tokio;
 
+const KEY_PATH: &str =
+    r"C:\Users\Burvy\AppData\Local\Posh-ACME\LE_PROD\3716529536\174.175.161.63\cert.key";
+const CERT_PATH: &str =
+    r"C:\Users\Burvy\AppData\Local\Posh-ACME\LE_PROD\3716529536\174.175.161.63\fullchain.cer";
+
 pub struct ServerPlugin;
 
 impl Plugin for ServerPlugin {
@@ -28,6 +33,7 @@ impl Plugin for ServerPlugin {
         app.add_observer(on_connect);
 
         app.add_systems(FixedUpdate, server_player_motion);
+        app.add_systems(Update, heartbeat);
 
         // this is not default, but prevents clients from controlling
         // entities they shouldn't be on the server
@@ -133,4 +139,24 @@ fn server_player_motion(
         .for_each(|(mut rot, mut vel, hits, action)| {
             shared::apply_input(&mut rot, &mut vel, &action.0, !hits.is_empty());
         })
+}
+
+fn heartbeat(
+    clients: Query<(), (With<ClientOf>, With<Connected>)>,
+    senders: Query<(), With<ReplicationSender>>,
+    players: Query<(), With<protocol::PlayerMarker>>,
+    time: Res<Time>,
+    mut next: Local<f32>,
+) {
+    if time.elapsed_secs() < *next {
+        return;
+    }
+
+    *next = time.elapsed_secs() + 60.0;
+    info!(
+        "clients: {}, senders: {}, players: {}",
+        clients.iter().count(),
+        senders.iter().count(),
+        players.iter().count(),
+    )
 }

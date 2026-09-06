@@ -3373,7 +3373,6 @@ dependencies = [
  "getrandom 0.4.3",
  "lightyear",
  "log",
- "tokio",
  "tracing",
 ]
 
@@ -3395,6 +3394,7 @@ dependencies = [
  "bevy",
  "game-protocol",
  "lightyear",
+ "tokio",
 ]
 
 [[package]]
