@@ -8,7 +8,6 @@
 # ---
 
 # these should never be commited
-digest.txt
 *.pem
 *.key
 .env
