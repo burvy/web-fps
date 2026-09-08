@@ -8,7 +8,9 @@ You can also visit the game directly through [this link](https://burvy.dev/game)
 
 ## `game` (client)
 Building: `cargo build -p game --release`  
-Running: `cargo run -p game` (Note that this requires the certificate at CERT_PATH)   
+Running: `cargo run -p game` (Note that this requires the certificate at CERT_PATH)  
+When running the built executable:  
+`game-server.exe C:\Users\Burvy\Desktop\burvy-dev\dist\game\digest.txt`  
 ## `game-server` (server)
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
