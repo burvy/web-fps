@@ -8,9 +8,14 @@ You can also visit the game directly through [this link](https://burvy.dev/game)
 
 ## `game` (client)
 Building: `cargo build -p game --release`  
-Running: `cargo run -p game` (Note that this requires the certificate at CERT_PATH)  
-When running the built executable:  
-`game-server.exe C:\Users\Burvy\Desktop\burvy-dev\dist\game\digest.txt`  
+Running: `cargo run -p game` (Note that this requires the certificate at CERT_PATH, create that first)  
+Look at server.rs, near the top:
+```rust
+const KEY_PATH: &str =
+    r"C:\Users\Burvy\AppData\Local\Posh-ACME\LE_PROD\3716529536\174.175.161.63\cert.key";
+const CERT_PATH: &str =
+    r"C:\Users\Burvy\AppData\Local\Posh-ACME\LE_PROD\3716529536\174.175.161.63\fullchain.cer";
+```
 ## `game-server` (server)
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
