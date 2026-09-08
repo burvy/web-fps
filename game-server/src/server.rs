@@ -80,8 +80,8 @@ fn startup(mut cmds: Commands) -> Result {
     let server = cmds
         .spawn((
             NetcodeServer::new(NetcodeConfig {
-                client_timeout_secs: 30 // how many seconds before disconnection
-                ..default(),
+                client_timeout_secs: 60, // how many seconds before disconnection
+                ..default()
             }),
             LocalAddr(protocol::SERVER_BIND_ADDR),
             WebTransportServerIo {
