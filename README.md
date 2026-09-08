@@ -8,7 +8,7 @@ You can also visit the game directly through [this link](https://burvy.dev/game)
 
 ## `game` (client)
 Building: `cargo build -p game --release`  
-Running: `cargo run -p game`  
+Running: `cargo run -p game` (Note that this requires the certificate at CERT_PATH)   
 ## `game-server` (server)
 Building: `cargo build -p game-server --release`  
 Running: `cargo run -p game-server`  
@@ -22,7 +22,7 @@ The server must be run on wherever the website is hosted
 
 ## burvy-dev
 `.\build.ps1`  
--> `dist\`  
+-> `dist\`  (This folder goes where the website is served)  
 
 The client build is in burvy.dev since it is a web client and must be compiled into wasm on the website.  
 The build script builds the client with trunk and links it to the output wasm.
@@ -303,7 +303,7 @@ the certificate.
 
 Names are typed, and live in the Subject Alternative Name extension, which carry their type tags:  
 `dnsName` holds something like `webtrans.burvy.dev`  
-`ipAddress` holds an IP address, like `123.456.768.90`  
+`ipAddress` holds an IP address, like `192.0.2.1` (replace with public ip)  
 
 As of 8/31/26, `client.rs:66` uses ipAddress, so the browser looks for an ipAddress SAN, 
 but my webtrans.burvy.dev certificate only has a dnsName, which does not say anything 
@@ -316,3 +316,21 @@ stuff like WHOIS. Let's Encrypt issued SANs only [recently](https://letsencrypt.
 It's only 6 days because IP addresses last for a short time and can be shuffled around easier than 
 domains. You can only prove you control an IP address using `http-01` and `tls-alpn-01` for now, 
 `dns-01` does not work.
+
+Note that the cert lasts 160 hours, ~6.6 days, Identity::load_pemfiles reads once at startup, which means 
+renewed files on disk aren't read again until the process restarts.   
+In powershell, renew and restart the server:  
+`Submit-Renewal`  
+Posh-ACME overwrites in place so CERT_PATH and KEY_PATH don't change
+the nginx renewal depends on
+```rust
+server {
+    listen 80;
+    server_name 174.175.161.63;
+    location /.well-known/acme-challenge/ { root C:/acme-challenge; }
+    location / { return 404; }
+}
+```  
+because we need to specify what we want to renew, and I have other stuff on my domain and ip, 
+which would ordinarily fail renewal and look nothing like a cert problem.  
+`http-01` sends `Host: 174.175.161.63` which doesn't immediately match to any specific server_name.

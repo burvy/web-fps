@@ -21,7 +21,7 @@ use lightyear::{
 // Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 // Import-Module Posh-ACME
 // Set-PAServer LE_PROD
-// New-PACertificate '123.456.78(replace with your ip)' `
+// New-PACertificate '192.0.2.1(replace with your public ip)' `
 //   -Plugin WebRoot `
 //   -PluginArgs @{ WRPath = 'C:\acme-challenge' } `
 //   -Profile shortlived `
