@@ -81,8 +81,8 @@ fn startup(mut cmds: Commands) -> Result {
 }
 
 fn on_connect(
-    trigger: On<Add, Connected>, // triggers when someone connected
-    query: Query<&RemoteId, With<ClientOf>>, // query `RemoteId`s that connected to us
+    trigger: On<Add, Connected>,      // triggers when someone connected
+    query: Query<(), With<ClientOf>>, // query `RemoteId`s that connected to us
     mut cmds: Commands,
 ) {
     if !query.contains(trigger.entity) {
@@ -117,12 +117,15 @@ fn on_connect(
 }
 
 fn server_player_motion(
-    mut players: Query<(
-        &mut Rotation,
-        &mut LinearVelocity,
-        &ShapeHits,
-        &ActionState<protocol::PlayerInputs>,
-    ), With<protocol::PlayerMarker>>,
+    mut players: Query<
+        (
+            &mut Rotation,
+            &mut LinearVelocity,
+            &ShapeHits,
+            &ActionState<protocol::PlayerInputs>,
+        ),
+        With<protocol::PlayerMarker>,
+    >,
 ) {
     players
         .iter_mut()
