@@ -54,28 +54,11 @@ impl Plugin for ServerPlugin {
 }
 
 fn startup(mut cmds: Commands) -> Result {
+    // real certificate instead of using digest
     let identity = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()?
         .block_on(Identity::load_pemfiles(CERT_PATH, KEY_PATH))?;
-    let digest = identity.certificate_chain().as_slice()[0].hash();
-    let digest_hex = digest.to_string().replace(":", "");
-    std::fs::write("digest.txt", &digest_hex)?;
-    info!("digest written: {}", digest);
-
-    // Server currently writes to own current working directory,
-    // which clients cant see over the network, but they can fetch
-    // a file over the network.
-    //
-    // run the executable like so:
-    // game-server.exe C:\Users\Burvy\Desktop\burvy-dev\dist\game\digest.txt
-    match std::env::args().nth(1) {
-        Some(path) => {
-            std::fs::write(&path, &digest_hex)?;
-            info!("digest published to {}", path);
-        }
-        None => warn!("no digest given, clients are unable to connect"),
-    }
 
     let server = cmds
         .spawn((
