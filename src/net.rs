@@ -27,9 +27,6 @@ use crate::player;
 
 const CLIENT_ADDR: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0);
 
-#[derive(Resource)]
-pub struct CertDigest(pub String);
-
 pub struct NetPlugin;
 
 impl Plugin for NetPlugin {
@@ -69,7 +66,7 @@ impl Plugin for NetPlugin {
  */
 
 /// Handles web handshake and creating a connection to the server
-fn connect(mut cmds: Commands, digest: Res<CertDigest>) -> Result {
+fn connect(mut cmds: Commands) -> Result {
     let auth = Authentication::Manual {
         server_addr: protocol::SERVER_ADDR,
         // TODO: Let server assign the client id

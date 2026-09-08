@@ -10,12 +10,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 static STARTED: AtomicBool = AtomicBool::new(false);
 
-pub fn run(digest: String) {
+pub fn run() {
     if STARTED.swap(true, Ordering::Relaxed) {
         return;
     }
     App::new()
-        .insert_resource(net::CertDigest(digest))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 canvas: Some("#game-canvas".into()),
