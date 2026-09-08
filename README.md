@@ -248,7 +248,7 @@ We must set `run_loop` faster so we notice that we should tick faster. We could 
 window for a whole 15ms if `run_loop` and `tick_duration` were both 15ms. On the other hand, we only 
 miss by 4ms at worst if `run_loop` is 4ms.
 
-### `digest.txt`
+### `digest.txt` - NO LONGER NEEDED
 The digest is a SHA-256 fingerprint of the certificate the server signs and is regenerated with every run, 
 which means it shouldn't be committed. 
 
