@@ -122,7 +122,7 @@ fn server_player_motion(
         &mut LinearVelocity,
         &ShapeHits,
         &ActionState<protocol::PlayerInputs>,
-    )>,
+    ), With<protocol::PlayerMarker>>,
 ) {
     players
         .iter_mut()
